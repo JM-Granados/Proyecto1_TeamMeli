@@ -1,22 +1,37 @@
-.dropDownSettings{
+.dropDownSettings {
     position: absolute;
     display: flex;
-    justify-content: space-start;
-    align-items: center;
-    padding: 15px;
-    border-radius: 15px;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 8px;
     background-color: white;
-    border: 1px solid gray;
+    border: none;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 30px; /* Se mantiene el borde redondeado para el contenedor */
 }
 
-.dropDownSettings::before{
-    content: '';
-    position: absolute;
-    top: -1rem;
-    right: 2rem;
-    width: 25px;
-    height: 25;
-    transform: rotate(45deg);
-    background-color: white;
+.dropDownSettings a {
+    /* Estilos para los botones/enlaces individuales */
+    display: block;
+    margin-bottom: 15px; /* Espacio entre botones */
+    padding: 8px 15px;
+    background-color: #eeeeee; /* Gris claro para el fondo de cada botón */
+    color: black;
+    text-align: left;
+    text-decoration: none;
+    width: calc(100% - 10px); /* Ajusta el ancho considerando el padding */
+    border-radius: 10px; /* Bordes redondeados para los botones */
+    box-sizing: border-box;
+    border: none; /* No hay borde */
+}
 
+/* Elimina el margen inferior para el último botón */
+.dropDownSettings a:last-child {
+    margin-bottom: 0;
+}
+
+/* Oculta el pseudo-elemento que antes creaba la flecha/indicador */
+.dropDownSettings::before {
+    display: none;
 }
