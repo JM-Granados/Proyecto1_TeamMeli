@@ -1,0 +1,22 @@
+.dropDownSettings{
+    position: absolute;
+    display: flex;
+    justify-content: space-start;
+    align-items: center;
+    padding: 15px;
+    border-radius: 15px;
+    background-color: white;
+    border: 1px solid gray;
+}
+
+.dropDownSettings::before{
+    content: '';
+    position: absolute;
+    top: -1rem;
+    right: 2rem;
+    width: 25px;
+    height: 25;
+    transform: rotate(45deg);
+    background-color: white;
+
+}

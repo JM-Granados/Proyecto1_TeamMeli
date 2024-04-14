@@ -24,7 +24,7 @@ function ForgotPass() {
                 <form>
                     <div className="mb-3">
                         <label htmlFor="Email">
-                            <strong>Enter your account's verified emial address and we will send you a password reset.</strong>
+                            <strong>Enter your account's verified email address and we will send you a password reset.</strong>
                         </label>
                         <input
                             type="text"

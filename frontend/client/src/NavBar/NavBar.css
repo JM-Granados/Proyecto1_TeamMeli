@@ -1,0 +1,24 @@
+.navbar{
+    display: flex;
+    justify-content: space-start;
+    align-items: center;
+    padding: 10px;
+    box-shadow: 0 1px 3px -2px gray;
+    background-color: #d9d9d9;
+    position: relative;
+}
+
+.nav-settings img {
+    width: 25px;  
+    height: auto; 
+}
+ 
+.nav-search img {
+    width: 35px;  
+    height: auto; 
+}
+
+.nav-user img {
+    width: 35px;  
+    height: auto; 
+}
