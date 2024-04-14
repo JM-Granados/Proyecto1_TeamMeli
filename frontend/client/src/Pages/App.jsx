@@ -15,6 +15,7 @@ function App() {
         <Route path='/Signup' element={<Signup />}></Route>
         <Route path='/Forgotpass' element={<ForgotPass />}></Route>
         <Route path='/NavBar' element={<NavBar />}></Route>
+        <Route path='/CreateDataSet' element={<CreateDataSet />}></Route>
       </Routes>
     </BrowserRouter> 
   )
