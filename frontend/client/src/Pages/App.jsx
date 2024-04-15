@@ -1,11 +1,23 @@
 import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
 import {BrowserRouter, Routes, Route, Link} from 'react-router-dom'
-import Signup from './Signup'
-import Login from './Login'
-import ForgotPass from './ForgotPass'
-import NavBar from '../NavBar/NavBar'
+import Clone from './clone'
 import CreateDataSet from './CreateDataSet'
+import DataSetNotis from './DataSetNotis'
+import Dm from './Dm'
+import ForgotPass from './ForgotPass'
+import Home from './Home'
+import LikedDownload from './LikedDownload'
+import Login from './Login'
+import MyDataSetInfo from './MyDataSetInfo'
+import MyDataSets from './MyDataSets'
+import MyVotes from './MyVotes'
+import OtherUserAcc from './OtherUserAcc'
+import Signup from './Signup'
+import UserConf from './UserConf'
+import UserDataSet from './UserDataSet'
+import NavBar from '../NavBar/NavBar'
+
 
 function App() {
 
