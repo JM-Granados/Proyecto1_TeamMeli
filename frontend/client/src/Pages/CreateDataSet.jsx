@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import './CreateDataSet.css'
 
 function CreateDataSet() {
     return (
@@ -16,6 +17,7 @@ function CreateDataSet() {
                         <li><span>Tutorial</span></li>
                     </ul>
                 </div>
+
                 <div className="infoinput">
                     <ul>
                         <li><input
