@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function Home() {
+function UserDataset() {
     return (
         <div>
             hola
@@ -11,4 +11,4 @@ function Home() {
     )
 }
 
-export default Home;
+export default UserDataset;

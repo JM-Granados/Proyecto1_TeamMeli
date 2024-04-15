@@ -12,11 +12,25 @@ const NavBar = () => {
 
     return (
         <div className='navbar'>
-            <div className="nav-settings">
+            <a href="#" class="settings-open">
+                <img src={Settings_icon} alt="Open settings" />
+            </a>
+            <ul>
+                <li>
+                    <li><a href="/MyDataSets">My DataSets</a></li>
+                </li>
+            </ul>
+            {/*<div className="nav-settings">
                 <img src={Settings_icon} alt="Settings" onClick={() => setOpenSettings((prev) => !prev)}/>
-                {
-                    openSettings && <DropDownSettings />
-                }
+                {/*openSettings && <DropDownSettings />
+                <ul>
+                    <li>
+                        <a href="/MyDataSets" class=""></a>
+                    </li>
+                    <li></li>
+                    <li></li>
+                </ul>
+
             </div>
             
             <div className="nav-search">
@@ -25,7 +39,7 @@ const NavBar = () => {
 
             <div className="nav-user">
             <img src={User_icon} alt="" />
-            </div>
+            </div>*/}
         </div>
     )
 }
