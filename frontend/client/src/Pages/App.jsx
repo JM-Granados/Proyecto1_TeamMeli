@@ -35,6 +35,9 @@ function App() {
         <Route path='/Dm' element={<Dm />}></Route>
         <Route path='/Home' element={<Home />}></Route>
         <Route path='/LikedDown' element={<LikedDown />}></Route>
+        <Route path='/MyDataSetInfo' element={<MyDataSetInfo />}></Route>
+        <Route path='/Clone' element={<Clone />}></Route>
+        <Route path='/UserDataset' element={<UserDataset />}></Route>
       </Routes>
     </BrowserRouter> 
   )

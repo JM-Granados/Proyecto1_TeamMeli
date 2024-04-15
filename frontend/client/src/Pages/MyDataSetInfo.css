@@ -1,0 +1,82 @@
+
+/* Estilos para el contenedor principal */
+.UserDataset {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Estilos para el encabezado */
+  .UserDataset header {
+    margin-bottom: 30px;
+    margin-top: 70px;
+  }
+  
+  .header-content {
+    display: flex;
+    align-items: center;
+  }
+  
+  .UserDataset h1 {
+    font-size: 70px;
+    color: #333;
+    margin: 0; /* Elimina el margen predeterminado */
+  }
+  
+  .UserDataset img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+  
+
+/* Estilos para las etiquetas de información */
+
+/*Con esto lo pongo a la par, importante usar aside*/
+.infodataset{
+    float: left;
+    width: 40%;
+}
+
+aside{
+    float: left;
+    width: 60%;
+    margin-top: 60px;
+    border: 2px solid #d9d9d9;
+    background-color: #d9d9d9;
+}
+
+.commentPost {
+  display: flex;
+  align-items: center; 
+}
+
+.commentPost input {
+  flex: 1; 
+  margin-right: 10px; 
+}
+
+
+/*Configura las etiquetas de informacion*/
+.infodataset ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 60px;
+}
+
+.infodataset li {
+    margin-bottom: 42px;
+}
+
+.infodataset span {
+    font-weight: bold;
+    font-size: 20px;
+    color: #555;
+}
+
+
+
+.clearfix{
+    clear:both
+}
