@@ -29,6 +29,11 @@ function App() {
         <Route path='/NavBar' element={<NavBar />}></Route>
         <Route path='/CreateDataSet' element={<CreateDataSet />}></Route>
         <Route path='/MyDataSets' element={<MyDataSets />}></Route>
+        <Route path='/DataSetsNotis' element={<DataSetsNotis />}></Route>
+        <Route path='/MyVotes' element={<MyVotes />}></Route>
+        <Route path='/UserConf' element={<UserConf />}></Route>
+        <Route path='/Dm' element={<Dm />}></Route>
+        <Route path='/Home' element={<Home />}></Route>
       </Routes>
     </BrowserRouter> 
   )

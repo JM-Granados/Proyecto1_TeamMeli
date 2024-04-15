@@ -106,7 +106,7 @@ function Signup() {
                             onChange={(e) => setAvatar(e.target.value)}
                         />
                     </div>
-                    <button type="submit" className="btn btn-success w-100 rounded-0">
+                    <button type="submit" className="btn btn-success w-100 rounded-10">
                         Create account
                     </button>
                 </form>
