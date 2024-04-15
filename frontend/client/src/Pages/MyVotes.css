@@ -1,0 +1,18 @@
+.MyVotes {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+
+}
+
+.MyVotes header {
+    text-align:center;
+    margin-bottom: 30px;
+    margin-top: 70px;
+}
+
+.MyVotes h1 {
+    font-size: 70px;
+    color: #333;
+}

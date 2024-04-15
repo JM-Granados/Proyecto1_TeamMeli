@@ -34,6 +34,7 @@ function App() {
         <Route path='/UserConf' element={<UserConf />}></Route>
         <Route path='/Dm' element={<Dm />}></Route>
         <Route path='/Home' element={<Home />}></Route>
+        <Route path='/LikedDown' element={<LikedDown />}></Route>
       </Routes>
     </BrowserRouter> 
   )
