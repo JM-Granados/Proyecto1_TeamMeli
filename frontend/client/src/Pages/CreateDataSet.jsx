@@ -46,8 +46,8 @@ function CreateDataSet() {
                 </div>
 
                 <div className="createButton">
-                    <button onClick={handleCreate}>Create Data Set</button>
-                </div>
+                    <button /*onClick={handleCreate}*/>Create Data Set</button>
+                </div>*
 
             </div>
         </div>
