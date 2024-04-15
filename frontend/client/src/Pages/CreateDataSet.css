@@ -1,4 +1,97 @@
+
+/* Estilos para el contenedor principal */
+.CreateDataSet {
+    font-family: Arial, sans-serif;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+
+}
+
+/* Estilos para el encabezado */
+.CreateDataSet header {
+    text-align:center;
+    margin-bottom: 30px;
+    margin-top: 70px;
+}
+
+.CreateDataSet h1 {
+    font-size: 70px;
+    color: #333;
+}
+
+/* Estilos para las etiquetas de información */
+
+/*Con esto lo pongo a la par, importante usar aside*/
+.infolabels{
+    float: left;
+    width: 40%;
+}
+
+aside{
+    float: left;
+    width: 60%;
+    margin-top: 60px;
+}
+
+/*Configura las etiquetas de informacion*/
+.infolabels ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 60px;
+}
+
+.infolabels li {
+    margin-bottom: 42px;
+}
+
 .infolabels span {
     font-weight: bold;
-    background-color: red;
+    font-size: 20px;
+    color: #555;
+}
+
+/* Estilos para los campos de entrada */
+.infoinput ul {
+    list-style: none;
+    padding: 0;
+}
+
+.infoinput li {
+    margin-bottom: 36px;
+    list-style: none;
+}
+
+.infoinput input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #ccc;
+}
+
+/* Estilos para los botones de archivo */
+.folderButton {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    
+}
+
+.folderButton img {
+    margin-right: 10px;
+    width: 20px;
+    height: 20px;
+}
+
+/* Estilos para los archivos de entrada */
+#avatarInput,
+#archiveInput, #videoInput {
+    display: none;
+}
+
+.createButton{
+    border-radius: 100px;
+}
+
+.clearfix{
+    clear:both
 }

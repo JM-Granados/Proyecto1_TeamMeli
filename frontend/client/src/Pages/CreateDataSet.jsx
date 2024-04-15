@@ -7,8 +7,10 @@ import './CreateDataSet.css'
 function CreateDataSet() {
     return (
         <div className="CreateDataSet">  
-      <h1>Create Data Set</h1>    
-                <div className="infolabels">
+        <header>
+            <h1>Create Data Set</h1>  
+        </header>
+                <section className="infolabels">
                     <ul>
                         <li><span>Name</span></li>
                         <li><span>Description</span></li>
@@ -16,9 +18,9 @@ function CreateDataSet() {
                         <li><span>Archives</span></li>
                         <li><span>Tutorial</span></li>
                     </ul>
-                </div>
+                </section>
 
-                <div className="infoinput">
+                <aside className="infoinput">
                     <ul>
                         <li><input
                             type="text"
@@ -62,7 +64,7 @@ function CreateDataSet() {
                             accept="video/*"
                         />
                     </label></li>
-                </div>
+                </aside>
                 
                 <div className="createButton">
                     <button /*onClick={handleCreate}*/>Create Data Set</button>
