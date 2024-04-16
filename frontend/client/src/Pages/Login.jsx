@@ -12,7 +12,7 @@ function Login() {
         e.preventDefault()
         /*axios.post('url de base', {usernameEmail, password})
         .then(result => {console.log(result)
-            navigate('/home')
+            navigate('/Home')
         })
         .catch(err=> console.log(err))*/
     }

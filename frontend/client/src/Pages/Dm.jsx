@@ -1,11 +1,11 @@
 import NavBar from '../NavBar/NavBar';
-import Dash from '../Mensajes/Dashboard/dashboard';
+import ChatPage from '../Mensajes/ChatPage';
 
 function Dm() {
     return (
         <div>
             <NavBar/>
-            <Dash/>
+            <ChatPage/>
         </div>
     )
 }
