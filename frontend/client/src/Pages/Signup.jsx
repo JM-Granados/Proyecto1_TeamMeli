@@ -14,11 +14,11 @@ function Signup() {
 
     const handleSubmit = (e) => {
         e.preventDefault()
-        /*axios.post('url de base', {name, username, email, password, birthdate, avatar})
+        axios.post('url de base', {name, username, email, password, birthdate, avatar})
         .then(result => {console.log(result)
             navigate('/')
         })
-        .catch(err=> console.log(err))*/
+        .catch(err=> console.log(err))
     }
 
     return (
