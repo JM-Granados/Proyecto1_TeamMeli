@@ -12,25 +12,33 @@ const getAllUsers = callback => {
     });
 };
 
-const getPasswordByEmail = (email, callback) => {
-    const sql = `SELECT password FROM users WHERE email = ?`;
-    connection.dbMySQL.query(sql, [email], (err, results) => {
-        if (err || results.length === 0) {
-            callback({ message: 'User not found', code: 'USER_NOT_FOUND' }, null);
-        } else {
-            callback(null, results[0].password);
-        }
+const getPasswordByEmail = (email) => {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT password FROM users WHERE email = ?`;
+        connection.dbMySQL.query(sql, [email], (err, results) => {
+            if (err || results.length === 0) {
+                reject({ message: 'Email not found.', code: 'USER_NOT_FOUND' });
+            } else {
+                const password = results[0].password;
+                const user = { password };
+                resolve(user);
+            }
+        });
     });
 };
 
-const getPasswordByUsername = (username, callback) => {
-    const sql = `SELECT password FROM users WHERE username = ?`;
-    connection.dbMySQL.query(sql, [username], (err, results) => {
-        if (err || results.length === 0) {
-            callback({ message: 'User not found', code: 'USER_NOT_FOUND' }, null);
-        } else {
-            callback(null, results[0].password);
-        }
+const getPasswordByUsername = (username) => {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT password FROM users WHERE username = ?`;
+        connection.dbMySQL.query(sql, [username], (err, results) => {
+            if (err || results.length === 0) {
+                reject({ message: 'Username not found.', code: 'USER_NOT_FOUND' });
+            } else {
+                const password = results[0].password;
+                const user = { password };
+                resolve(user);
+            }
+        });
     });
 };
 

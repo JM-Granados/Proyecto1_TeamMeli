@@ -22,10 +22,11 @@ function Login() {
 
 
         try {
-            const result = await axios.get(endpoint, { password })
+            const result = await axios.post(endpoint, { usernameEmail, password })
             console.log(result);
 
-            if(result.data.message === "User exist" && validatePassword(password, result.data.password)) {
+            if(result.data.message === "User exist and password is correct") {
+                console.log("HOLA")
                 navigate('/Home')
             } else {
                 setErrorMessage('Username, email or password incorrect.');

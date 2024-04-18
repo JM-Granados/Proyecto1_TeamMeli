@@ -7,9 +7,9 @@ router.route('/')
     .post(createUser);
 
 router.route('/email/:email')
-    .get(getPasswordByEmail)
+    .post(getPasswordByEmail)
 
 router.route('/username/:username')
-    .get(getPasswordByUsername)
+    .post(getPasswordByUsername)
 
 module.exports = router;

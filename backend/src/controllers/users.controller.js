@@ -3,7 +3,7 @@ const usersCtrl = {};
 const UsersModel = require('../models/Users')
 
 const bcrypt = require('bcrypt');
-const saltRounds = 10;
+const saltRounds = bcrypt.genSalt(10);
 
 usersCtrl.getUsers = async (req, res) => {
     await UsersModel.getAllUsers((err, users) => {
@@ -16,26 +16,55 @@ usersCtrl.getUsers = async (req, res) => {
 }
 
 usersCtrl.getPasswordByEmail = async (req, res) => {
-    const email = req.params.email;
-    await UsersModel.getPasswordByEmail(email, (err, password) => {
-        if (err) {
-            res.status(500).json({ error: err.message, detail: err.detail });
+    const { usernameEmail, password } = req.body;
+
+    try {
+        const user = await UsersModel.getPasswordByEmail(usernameEmail);
+        if (user && user.password && password) {
+            // Comparar la contraseña proporcionada con la almacenada (hash)
+            const match = await bcrypt.compare(password, user.password);
+
+            
+            if (match) {
+
+                res.json({ message: 'User exist and password is correct'});
+            } else {
+                res.status(401).json({ error: 'Username, email or password incorrect.', detail: 'PASSWORD_INCORRECT' });
+            }
         } else {
-            res.json({ message: 'User exist', password: password });
+            res.status(401).json({ error: 'Username, email or password incorrect.', detail: 'USER_NOT_FOUND' });
         }
-    });
+    } catch (err) {
+        // Maneja posibles errores que podrían ocurrir durante la verificación de la contraseña o la consulta
+        res.status(500).json({ error: err.message, detail: err.detail });
+    }
 }
 
+
 usersCtrl.getPasswordByUsername = async (req, res) => {
-    const username = req.params.username;
-    await UsersModel.getPasswordByUsername(username, (err, password) => {
-        if (err) {
-            res.status(500).json({ error: err.message, detail: err.detail });
+    const { usernameEmail, password } = req.body;
+
+    try {
+        const user = await UsersModel.getPasswordByUsername(usernameEmail);
+        if (user && user.password && password) {
+            // Comparar la contraseña proporcionada con la almacenada (hash)
+            const match = await bcrypt.compare(password, user.password);
+
+            
+            if (match) {
+
+                res.json({ message: 'User exist and password is correct'});
+            } else {
+                res.status(401).json({ error: 'Username, email or password incorrect.', detail: 'PASSWORD_INCORRECT' });
+            }
         } else {
-            res.json({ message: 'User exist', password: password });
+            res.status(401).json({ error: 'Username, email or password incorrect.', detail: 'USER_NOT_FOUND' });
         }
-    });
-}
+    } catch (err) {
+        // Maneja posibles errores que podrían ocurrir durante la verificación de la contraseña o la consulta
+        res.status(500).json({ error: err.message, detail: err.detail });
+    }
+};
 
 usersCtrl.createUser = async (req, res) => {
     const { firstName, secondName, firstLastname, secondLastName, username, email, password, birthdate, avatar } = req.body;
