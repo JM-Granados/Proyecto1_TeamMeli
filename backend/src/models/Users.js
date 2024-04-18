@@ -38,6 +38,7 @@ const getPasswordByEmail = (email) => {
     return new Promise((resolve, reject) => {
         const sql = `SELECT password FROM users WHERE email = ?`;
         connection.dbMySQL.query(sql, [email], (err, results) => {
+            console.log("HIKMANXKAS");
             if (err || results.length === 0) {
                 reject({ message: 'Email not found.', code: 'USER_NOT_FOUND' });
             } else {

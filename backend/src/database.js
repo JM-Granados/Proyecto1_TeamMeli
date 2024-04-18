@@ -3,7 +3,7 @@
 const mysql = require('mysql2');
 const URI_mysql = process.env.MYSQL_URI;
 
-/*
+
 const dbMySQL = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -19,10 +19,8 @@ dbMySQL.connect( (error) =>{
     }
 })
 
-module.exports = {
-    dbMySQL
-}
-*/
+
+
 /////////////////////////////////////////////
 // MongoDB
 /*const mongoose = require('mongoose');
@@ -47,3 +45,7 @@ mongoConnection.once('open', () =>{
 //Redis
 
 /////////////////////////////////////////////
+
+module.exports = {
+    dbMySQL
+}
