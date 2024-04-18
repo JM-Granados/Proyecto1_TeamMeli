@@ -15,6 +15,29 @@ usersCtrl.getUsers = async (req, res) => {
     });
 }
 
+usersCtrl.getUserByEmail = async (req, res) => {
+    const email = req.params.email;
+    await UsersModel.getUserByEmail(email, (err, user) =>{
+        if (err) {
+            res.status(500).json({error: err.message, detail: err.detail});
+        } else {
+            res.json({message: 'User exist', user: user})
+            console.log(user.idUser);
+        }
+    });
+}
+
+usersCtrl.getUserByUsername = async (req, res) => {
+    const username = req.params.username;
+    await UsersModel.getUserByUsername(username, (err, user) =>{
+        if (err) {
+            res.status(500).json({error: err.message, detail: err.detail});
+        } else {
+            res.json({message: 'User exist', user: user})
+        }
+    });
+}
+
 usersCtrl.getPasswordByEmail = async (req, res) => {
     const { usernameEmail, password } = req.body;
 

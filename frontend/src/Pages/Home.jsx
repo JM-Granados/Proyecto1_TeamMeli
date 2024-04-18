@@ -7,6 +7,8 @@ import NavBar from '../NavBar/NavBar';
 import AddButton from '../assets/AddButton.png'
 
 function Home() {
+    const user = JSON.parse(localStorage.getItem('user')); 
+
     return (
         <div>
             <NavBar/>

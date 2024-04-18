@@ -7,6 +7,8 @@ import NavBar from '../NavBar/NavBar';
 import User_icon from '../assets/User.png'
 
 function UserConf() {
+    const user = JSON.parse(localStorage.getItem('user'));
+
     return (
         <div>
             <NavBar/>
@@ -33,7 +35,7 @@ function UserConf() {
                         </label>
                         <input
                             type="text"
-                            placeholder="Traer desde base "
+                            placeholder= {user.firstName}
                             autoComplete="off"
                             name="Name"
                             className="form-control rounded-0"
@@ -46,7 +48,7 @@ function UserConf() {
                         </label>
                         <input
                             type="text"
-                            placeholder="Traer desde base "
+                            placeholder= {user.username}
                             autoComplete="off"
                             name="username"
                             className="form-control rounded-0"
@@ -59,7 +61,7 @@ function UserConf() {
                         </label>
                         <input
                             type="text"
-                            placeholder="Traer desde base "
+                            placeholder={user.email}
                             autoComplete="off"
                             name="Email"
                             className="form-control rounded-0"
