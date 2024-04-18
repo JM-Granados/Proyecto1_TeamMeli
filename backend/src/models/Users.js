@@ -12,10 +12,33 @@ const getAllUsers = callback => {
     });
 };
 
+const getUserByEmail = (email, callback) => {
+    const sql = 'SELECT * FROM users WHERE email = ?';
+    connection.dbMySQL.query(sql, [email], (err, results) => {
+        if (err) {
+            callback({message: 'User not found', code: 'USER_NOT_FOUND'}, null);
+        } else {
+            callback(null, results[0]);
+        }
+    });
+}
+
+const getUserByUsername = (username, callback) => {
+    const sql = 'SELECT * FROM users WHERE username = ?';
+    connection.dbMySQL.query(sql, [username], (err, results) => {
+        if (err) {
+            callback({message: 'User not found', code: 'USER_NOT_FOUND'}, null);
+        } else {
+            callback(null, results[0]);
+        }
+    });
+}
+
 const getPasswordByEmail = (email) => {
     return new Promise((resolve, reject) => {
         const sql = `SELECT password FROM users WHERE email = ?`;
         connection.dbMySQL.query(sql, [email], (err, results) => {
+            console.log("HIKMANXKAS");
             if (err || results.length === 0) {
                 reject({ message: 'Email not found.', code: 'USER_NOT_FOUND' });
             } else {
@@ -86,6 +109,8 @@ function decodeSQLMessage(err) {
 
 module.exports = {
     getAllUsers,
+    getUserByEmail,
+    getUserByUsername,
     getPasswordByEmail,
     getPasswordByUsername,
     createUser

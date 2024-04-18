@@ -23,16 +23,37 @@ function Login() {
 
         try {
             const result = await axios.post(endpoint, { usernameEmail, password })
-            console.log(result);
 
             if(result.data.message === "User exist and password is correct") {
-                console.log("HOLA")
+                const response = await axios.get(endpoint);
+                const user = response.data.user;
+                const id = user.idUser;
+                const firstName = user.firstName;
+                const secondName = user.secondName;
+                const firstLastName = user.firstLastName;
+                const secondLastName = user.secondLastName;
+                const email = user.email;
+                const username = user.username;
+                const avatar = user.avatar;
+                const birthdate = user.birthdate;
+
+                localStorage.setItem('user', JSON.stringify({
+                    firstName,
+                    secondName,
+                    firstLastName,
+                    secondLastName,
+                    email,
+                    username,
+                    avatar,
+                    birthdate,
+                    id
+                }));
                 navigate('/Home')
             } else {
                 setErrorMessage('Username, email or password incorrect.');
             }
         } catch (err) {
-            setErrorMessage(err.response.data.error || 'An error ocurred while creating the user.')
+            setErrorMessage(err.response.data.error || 'An error ocurred.')
         }
 
     }
