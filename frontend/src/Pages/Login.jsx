@@ -7,20 +7,40 @@ function Login() {
     const [usernameEmail, setUsernameEmail] = useState()
     const [password, setPassword] = useState()
     const navigate = useNavigate()
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        /*axios.post('url de base', {usernameEmail, password})
-        .then(result => {console.log(result)
-            navigate('/Home')
-        })
-        .catch(err=> console.log(err))*/
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrorMessage('');
+        
+        const emailRegex = /\S+@\S+\.\S+/;
+        const isEmail = emailRegex.test(usernameEmail);
+
+        const endpoint = isEmail 
+        ? `http://localhost:4000/api/users/email/${usernameEmail}`
+        : `http://localhost:4000/api/users/username/${usernameEmail}`;
+
+
+        try {
+            const result = await axios.post(endpoint, { usernameEmail, password })
+            console.log(result);
+
+            if(result.data.message === "User exist and password is correct") {
+                console.log("HOLA")
+                navigate('/Home')
+            } else {
+                setErrorMessage('Username, email or password incorrect.');
+            }
+        } catch (err) {
+            setErrorMessage(err.response.data.error || 'An error ocurred while creating the user.')
+        }
+
     }
     
     return(
         <div>
             <div className = "d-flex justify-content-center align-items-center bg-secondary vh-100">
-            <div className = "bg-white p-3 rounded w-25">
+            <div className = "bg-white p-4 rounded w-20">
                 <h2>Log in</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
@@ -53,6 +73,8 @@ function Login() {
                         Sign in
                     </button>
                     <p></p>
+                    {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
+                    <p></p>
                     <p>New account?</p>
                     <Link to="/Signup" className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none">
                         Create an account.
@@ -62,6 +84,10 @@ function Login() {
         </div>
         </div>
     )
+}
+
+function validatePassword(inputPassword, storedPassword) {
+    return inputPassword === storedPassword;
 }
 
 export default Login;
