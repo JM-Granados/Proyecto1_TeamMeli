@@ -1,8 +1,9 @@
 /////////////////////////////////////////////
+/*
 //MySql
 const mysql = require('mysql2');
 const URI_mysql = process.env.MYSQL_URI;
-
+*/
 /*
 const dbMySQL = mysql.createConnection({
     host: 'localhost',
@@ -23,11 +24,13 @@ module.exports = {
     dbMySQL
 }
 */
+
+
 /////////////////////////////////////////////
 // MongoDB
-/*const mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-const URI = process.env.MONGODB_URI;
+const URI = 'mongodb://localhost/dataset';
 
 mongoose.connect(URI, {
     useNewUrlParser: true,
@@ -38,7 +41,7 @@ const mongoConnection = mongoose.connection;
 
 mongoConnection.once('open', () =>{
     console.log('MongoDB connected...');
-});*/
+});
 
 /////////////////////////////////////////////
 //Neo4j
