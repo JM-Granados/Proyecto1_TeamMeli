@@ -45,6 +45,7 @@ const NavBar = () => {
                     <div className="perfil-dropdown">
                         <a href="/UserConf" className="perfil-item">Profile settings</a>
                         <a href="/Dm" className="perfil-item">Direct message</a>
+                        <a href="/" className="perfil-item">Close session</a>
                     </div>)
                 }
             </div>
