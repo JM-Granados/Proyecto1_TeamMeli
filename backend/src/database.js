@@ -26,20 +26,23 @@ module.exports = {
 */
 /////////////////////////////////////////////
 // MongoDB
+
 const mongoose = require('mongoose');
 
-const URI = 'mongodb://localhost/dataset';
+//console.log(process.env.MONGODB_URI);
 
-mongoose.connect(URI, {
-    useNewUrlParser: true,
-    useCreateIndex: true
+const URI = process.env.MONGODB_URI;
+mongoose.connect(URI);
+
+
+
+const connection = mongoose.connection;
+
+connection.once('open', () =>{
+    console.log('MongoDB is connected :D...')
 });
 
-const mongoConnection = mongoose.connection;
 
-mongoConnection.once('open', () =>{
-    console.log('MongoDB connected...');
-});
 
 /////////////////////////////////////////////
 //Neo4j
@@ -49,6 +52,9 @@ mongoConnection.once('open', () =>{
 
 /////////////////////////////////////////////
 
+
+/*
 module.exports = {
     dbMySQL
 }
+*/
