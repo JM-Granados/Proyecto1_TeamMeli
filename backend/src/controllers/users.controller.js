@@ -10,7 +10,7 @@ usersCtrl.getUsers = async (req, res) => {
         if (err) {
             res.status(500).json({ message: 'Error retrieving users', error: err });
         } else {
-            res.json(users);
+            res.json({ message: 'Success', users: users });
         }
     });
 }

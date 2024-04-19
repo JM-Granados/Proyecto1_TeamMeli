@@ -23,7 +23,8 @@ dbMySQL.connect( (error) =>{
 
 /////////////////////////////////////////////
 // MongoDB
-/*const mongoose = require('mongoose');
+/*
+const mongoose = require('mongoose');
 
 const URI = process.env.MONGODB_URI;
 
@@ -36,8 +37,8 @@ const mongoConnection = mongoose.connection;
 
 mongoConnection.once('open', () =>{
     console.log('MongoDB connected...');
-});*/
-
+});
+*/
 /////////////////////////////////////////////
 //Neo4j
 
