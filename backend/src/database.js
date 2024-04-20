@@ -1,4 +1,5 @@
 /////////////////////////////////////////////
+
 //MySql
 const mysql = require('mysql2');
 const URI_mysql = process.env.MYSQL_URI;
@@ -19,26 +20,36 @@ dbMySQL.connect( (error) =>{
     }
 })
 
-
+module.exports = {
+    dbMySQL
+}
 
 /////////////////////////////////////////////
 // MongoDB
 /*
 const mongoose = require('mongoose');
 
-const URI = process.env.MONGODB_URI;
+const mongoose = require('mongoose');
 
-mongoose.connect(URI, {
-    useNewUrlParser: true,
-    useCreateIndex: true
+//console.log(process.env.MONGODB_URI);
+
+const URI = process.env.MONGODB_URI;
+mongoose.connect(URI);
+
+
+
+const connection = mongoose.connection;
+
+connection.once('open', () =>{
+    console.log('MongoDB is connected :D...')
 });
 
-const mongoConnection = mongoose.connection;
 
 mongoConnection.once('open', () =>{
     console.log('MongoDB connected...');
 });
 */
+
 /////////////////////////////////////////////
 //Neo4j
 
@@ -47,6 +58,9 @@ mongoConnection.once('open', () =>{
 
 /////////////////////////////////////////////
 
+
+/*
 module.exports = {
     dbMySQL
 }
+*/
