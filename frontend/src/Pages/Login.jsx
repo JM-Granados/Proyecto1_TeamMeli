@@ -80,7 +80,7 @@ function Login() {
                     <div className="mb-3">
                     <label htmlFor="password">
                             <strong>Password </strong>
-                            <a class="label-link" href="/ForgotPass"> Forgot password? </a>
+                            <a className="label-link" href="/ForgotPass"> Forgot password? </a>
                         </label>
                         <input
                             type="password"

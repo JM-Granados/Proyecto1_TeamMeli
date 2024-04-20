@@ -9,18 +9,24 @@ import User_icon from '../assets/User.png'
 function UserConf() {
     const user = JSON.parse(localStorage.getItem('user'));
 
+    const getImageUrl = (avatar) => {
+        return avatar ? `http://localhost:4000/user-images/${avatar}` : `http://localhost:4000/user-images/User.png`;
+    };
+
     return (
         <div>
             <NavBar/>
             <div className = "bg-white p-5 rounded">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <img 
-                    src={User_icon} 
+                    src={getImageUrl(user.avatar)} 
                     alt="User profile"
                     style={{
                     width: "150px",
                     marginRight: "0px", // Añade espacio a la derecha de la imagen
-                    display: 'block' // Asegura que la imagen no tenga espacio extra debajo
+                    display: 'block', // Asegura que la imagen no tenga espacio extra debajo
+                    objectFit: 'cover', 
+                    borderRadius: '50%' 
                     }}
                 />
                 <h2 style={{ margin: 50 }}>Profile settings</h2>

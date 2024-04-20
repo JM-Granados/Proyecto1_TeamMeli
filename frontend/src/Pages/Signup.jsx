@@ -20,12 +20,27 @@ function Signup() {
         e.preventDefault();
         setErrorMessage('');
 
-        const formData = FormData();
-        formData.append('Username', username);
-        formData.append('email', email);
+        const formData = new FormData();
+        formData.append('firstName', FirstName !== undefined ? FirstName : "");
+        formData.append('secondName', SecondName !== undefined ? SecondName : "");
+        formData.append('firstLastName', FirstLastName !== undefined ? FirstLastName : "");
+        formData.append('secondLastName', SecondLastName !== undefined ? SecondLastName : "");
+        formData.append('username', username !== undefined ? username : "");
+        formData.append('email', email !== undefined ? email : "");
+        formData.append('password', password !== undefined ? password : "");
+        formData.append('birthdate', birthdate !== undefined ? birthdate : "");
+        formData.append('avatar', avatar !== undefined ? avatar : "");
+
+
+        console.log(email);
 
         try {
-            const result = await axios.post('http://localhost:4000/api/users/', {FirstName, SecondName, FirstLastName, SecondLastName, username, email, password, birthdate, avatar})
+            const result = await axios.post('http://localhost:4000/api/users/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
             console.log(result);
             if(result.data.message === "User created") {
                 navigate('/')
@@ -158,7 +173,7 @@ function Signup() {
                             name="User photo or avatar"
                             className="form-control rounded-0"
                             accept="image/png, image/jpeg, image/jpg"
-                            onChange={(e) => setavatar(e.target.value)}
+                            onChange={(e) => setavatar(e.target.files[0])}
                         />
                     </div>
                     <button type="submit" className="btn btn-success w-100 rounded-10">

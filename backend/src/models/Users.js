@@ -69,14 +69,14 @@ const createUser = (user, callback) => {
     const sql = `
         INSERT INTO users (idUser, firstName, secondName, firstLastname, secondLastName, username, email, password, birthdate, avatar)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `;
-
+        `;
+    console.log(user);
     connection.dbMySQL.query(sql, [
         null,
-        user.FirstName,
-        user.SecondName,
-        user.FirstLastName,
-        user.SecondLastName,
+        user.firstName,
+        user.secondName,
+        user.firstLastName,
+        user.secondLastName,
         user.username,
         user.email,
         user.password,
