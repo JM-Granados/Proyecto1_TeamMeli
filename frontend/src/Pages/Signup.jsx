@@ -19,6 +19,11 @@ function Signup() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
+
+        const formData = FormData();
+        formData.append('Username', username);
+        formData.append('email', email);
+
         try {
             const result = await axios.post('http://localhost:4000/api/users/', {FirstName, SecondName, FirstLastName, SecondLastName, username, email, password, birthdate, avatar})
             console.log(result);
