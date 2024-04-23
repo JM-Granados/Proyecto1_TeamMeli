@@ -27,7 +27,7 @@ function Home() {
                 setErrorMessage(err.response?.data.error || 'An error occurred while fetching users.');
             }
         };
-        
+
         fetchUsers(); // Llamar a la función al montar el componente
     }, []);
 
@@ -38,23 +38,23 @@ function Home() {
 
     return (
         <div>
-            <NavBar/>
+            <NavBar />
             <a href="/CreateDataSet" className='home-back'>
                 <img
                     src={AddButton}
                     alt="Descripción de la imagen"
                     style={{
                         position: 'absolute',
-                        bottom: '10px', 
-                        right: '10px', 
-                        width: '50px', 
-                        height: 'auto' 
+                        bottom: '10px',
+                        right: '10px',
+                        width: '50px',
+                        height: 'auto'
                     }}
                 />
             </a>
             <h1>Following</h1>
             <table className="table table-striped table-borderless">
-                
+
                 <thead>
                     <tr>
                         <th scope="col"></th>
@@ -75,18 +75,18 @@ function Home() {
 
                                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                        <th className="modal-title fs-5" id="exampleModalLabel">TUKI</th>
-                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <div className="modal-content">
+                                            <div className="modal-header">
+                                                <th className="modal-title fs-5" id="exampleModalLabel">TUKI</th>
+                                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div className="modal-body">
+                                            </div>
+                                            <div className="modal-footer">
+                                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="button" className="btn btn-primary">Save changes</button>
+                                            </div>
                                         </div>
-                                        <div className="modal-body">
-                                        </div>
-                                        <div className="modal-footer">
-                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" className="btn btn-primary">Save changes</button>
-                                        </div>
-                                    </div>
                                     </div>
                                 </div>
                             </td>

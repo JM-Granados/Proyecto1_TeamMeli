@@ -42,7 +42,7 @@ function Signup() {
             });
 
             console.log(result);
-            if(result.data.message === "User created") {
+            if (result.data.message === "User created") {
                 navigate('/')
             } else {
                 setErrorMessage('Unexpected response from the server.');
