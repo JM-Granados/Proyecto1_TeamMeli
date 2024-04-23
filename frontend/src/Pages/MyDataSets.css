@@ -16,3 +16,18 @@
     font-size: 70px;
     color: #333;
 }
+
+.nav-container {
+    width: 100%;
+    margin-left: 0%;
+}
+
+.listDatasets {
+    text-align: center;
+    list-style: none;
+}
+
+.row {
+    object-position: center;
+    margin-left: 90px;
+}

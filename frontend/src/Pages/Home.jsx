@@ -12,15 +12,15 @@ function Home() {
     const [users, setUsers] = useState([]);
     const [userr, setUser] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
-    
+
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const response = await axios.get("http://localhost:4000/api/users");
-                if(response.data.message === "Success") {
+                if (response.data.message === "Success") {
                     const usersWithAvatars = await Promise.all(response.data.users.map(async (user) => {
                         const avatarURL = await createImageURLFromBuffer(user.avatar.data);
-                        return { ...user, avatarURL};
+                        return { ...user, avatarURL };
                     }));
                     setUsers(usersWithAvatars);
                 } else {
@@ -30,10 +30,10 @@ function Home() {
                 setErrorMessage(err.response?.data.error || 'An error occurred while fetching users.');
             }
         };
-        
+
         fetchUsers(); // Llamar a la función al montar el componente
     }, []);
-    
+
     console.log(users);
     const bufferToBlob = (bufferArray) => {
         // Convertimos el array de buffer que recibimos a un Uint8Array
@@ -64,23 +64,23 @@ function Home() {
 
     return (
         <div>
-            <NavBar/>
+            <NavBar />
             <a href="/CreateDataSet" className='home-back'>
                 <img
                     src={AddButton}
                     alt="Descripción de la imagen"
                     style={{
                         position: 'absolute',
-                        bottom: '10px', 
-                        right: '10px', 
-                        width: '50px', 
-                        height: 'auto' 
+                        bottom: '10px',
+                        right: '10px',
+                        width: '50px',
+                        height: 'auto'
                     }}
                 />
             </a>
             <h1>Following</h1>
             <table className="table table-striped table-borderless">
-                
+
                 <thead>
                     <tr>
                         <th scope="col"></th>
@@ -92,34 +92,34 @@ function Home() {
                     {users.map((user, index) => (
                         <tr key={user.idUser}>
                             <th scope="row" style={{ width: '100px' }}>
-                                <img src={user.avatar || 'defaultAvatarPath.jpg'} className="card-img-top" alt="Avatar"/>
+                                <img src={user.avatar || 'defaultAvatarPath.jpg'} className="card-img-top" alt="Avatar" />
                             </th>
                             <td>{user.username}</td>
                             <td><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    Direct message
-                                </button>
+                                Direct message
+                            </button>
 
                                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                    <div className="modal-content">
-                                        <div className="modal-header">
-                                        <th className="modal-title fs-5" id="exampleModalLabel">TUKI</th>
-                                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <div className="modal-content">
+                                            <div className="modal-header">
+                                                <th className="modal-title fs-5" id="exampleModalLabel">TUKI</th>
+                                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div className="modal-body">
+                                            </div>
+                                            <div className="modal-footer">
+                                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <button type="button" className="btn btn-primary">Save changes</button>
+                                            </div>
                                         </div>
-                                        <div className="modal-body">
-                                        </div>
-                                        <div className="modal-footer">
-                                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                        <button type="button" className="btn btn-primary">Save changes</button>
-                                        </div>
-                                    </div>
                                     </div>
                                 </div>
                             </td>
 
                             <td><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    View 
-                                </button>
+                                View
+                            </button>
 
                                 <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
