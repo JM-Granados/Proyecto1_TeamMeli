@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
+import Icon_DataHub from '../../public/Icon_DataHub.jpg'
+
 function Login() {
     const [usernameEmail, setUsernameEmail] = useState()
     const [password, setPassword] = useState()
@@ -30,23 +32,25 @@ function Login() {
                 const id = user.idUser;
                 const firstName = user.firstName;
                 const secondName = user.secondName;
-                const firstLastName = user.firstLastName;
+                const firstLastname = user.firstLastname;
                 const secondLastName = user.secondLastName;
                 const email = user.email;
                 const username = user.username;
                 const avatar = user.avatar;
                 const birthdate = user.birthdate;
+                const password = user.password;
 
                 localStorage.setItem('user', JSON.stringify({
                     firstName,
                     secondName,
-                    firstLastName,
+                    firstLastname,
                     secondLastName,
                     email,
                     username,
                     avatar,
                     birthdate,
-                    id
+                    id,
+                    password
                 }));
                 navigate('/Home')
             } else {
@@ -57,11 +61,15 @@ function Login() {
         }
 
     }
+
+
     
     return(
         <div>
             <div className = "d-flex justify-content-center align-items-center bg-secondary vh-100">
-            <div className = "bg-white p-4 rounded w-20">
+            <div className = "bg-white p-4 rounded">
+                <img src={Icon_DataHub} alt="" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '200px', height: '180px', objectFit: 'cover', borderRadius: '50%'}}/>
+                <p></p>
                 <h2>Log in</h2>
                 <form onSubmit={handleSubmit}>
                     <div className="mb-3">
@@ -70,7 +78,7 @@ function Login() {
                         </label>
                         <input
                             type="text"
-                            placeholder="Enter username or email address"
+                            placeholder="Enter username or email"
                             autoComplete="off"
                             name="usernameOrEmail"
                             className="form-control rounded-0"

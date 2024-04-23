@@ -14,6 +14,7 @@ import MyDataSetInfo from './MyDataSetInfo'
 import MyDataSets from './MyDataSets'
 import MyVotes from './MyVotes'
 import OtherUserAcc from './OtherUserAcc'
+import ResetPassword from './ResetPassword';
 import Signup from './Signup'
 import UserConf from './UserConf'
 import UserDataset from './UserDataset'
@@ -34,6 +35,7 @@ function App() {
         <Route path='/MyDataSets' element={<MyDataSets />}></Route>
         <Route path='/MyVotes' element={<MyVotes />}></Route>
         <Route path='/OtherUserAcc' element={<OtherUserAcc />}></Route>
+        <Route path='/ResetPassword' element={<ResetPassword/>}></Route>
         <Route path='/Signup' element={<Signup />}></Route>
         <Route path='/UserConf' element={<UserConf />}></Route>
         <Route path='/UserDataset' element={<UserDataset />}></Route>

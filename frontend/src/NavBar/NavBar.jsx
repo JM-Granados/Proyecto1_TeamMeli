@@ -40,9 +40,13 @@ const NavBar = () => {
             </div>
             
             
-            <div className="search">
-            <img src={Search_icon} alt="" />
+            <div style={{ alignItems: 'center'}}>
+                <form class="d-flex" role="search" >
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
             </div>
+            
 
             <div className="perfil-open">
                 <img src={getImageUrl(user.avatar)} alt="Open perfil" onClick={() => setOpenUser((prev) => !prev)} style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }}/>

@@ -9,9 +9,98 @@ import User_icon from '../assets/User.png'
 function UserConf() {
     const user = JSON.parse(localStorage.getItem('user'));
 
+    const navigate = useNavigate()
+    const [errorMessage, setErrorMessage] = useState('');
+
     const getImageUrl = (avatar) => {
         return avatar ? `http://localhost:4000/user-images/${avatar}` : `http://localhost:4000/user-images/User.png`;
     };
+
+    const [firstName, setFirstName] = useState('')
+    const [secondName, setSecondName] = useState('')
+    const [firstLastname, setFirstLastName] = useState('')
+    const [secondLastName, setSecondLastName] = useState('')
+    const [username, setUsername] = useState('')
+    const [email, setEmail] = useState('')
+    const [currentPassword, setCurrentPassword] = useState('')
+    const [newPassword, setNewPassword] = useState('')
+    const [passwordConf, setPasswordConf] = useState('')
+    const [avatar, setAvatar] = useState(null)
+
+    const [isPasswordValid, setIsPasswordValid] = useState(true);
+    const [passwordError, setPasswordError] = useState('');
+
+    const currectUsername = user.username;
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrorMessage('');
+
+        const updatedFields = {};
+
+        if (firstName && firstName !== user.firstName) updatedFields.firstName = firstName; 
+        if (secondName && secondName !== user.secondName) updatedFields.secondName = secondName;
+        if (firstLastname && firstLastname !== user.firstLastname) updatedFields.firstLastname = firstLastname;
+        if (secondLastName && secondLastName !== user.secondLastName) updatedFields.secondLastName = secondLastName;
+        if (username && username !== user.username) updatedFields.username = username;
+        if (email && email !== user.email) updatedFields.email = email;
+        if (avatar && avatar !== user.avatar) updatedFields.avatar = avatar;
+        if (newPassword && newPassword === passwordConf && currentPassword) {
+            try {
+                const response = await axios.post(`http://localhost:4000/api/users/update/:${currectUsername}`, {currectUsername , currentPassword })
+                if(response.data.message === "User exist and password is correct") {
+                    updatedFields.password = newPassword;
+                }
+            } catch {
+                setErrorMessage('Wrong current password.');
+            }
+        }
+
+        const formData = new FormData();
+
+        if (avatar) {
+            formData.append('avatar', avatar);
+        }
+        
+        Object.keys(updatedFields).forEach(key => {
+            formData.append(key, updatedFields[key]);
+        });
+
+        try {
+            const response = await axios.post(`http://localhost:4000/api/users/update/:${user.email}`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+
+            if (response.data.result === "User update") {
+                const updatedUserData = { ...user, ...updatedFields };
+                localStorage.setItem('user', JSON.stringify(updatedUserData));
+                navigate('/UserConf')
+            } else {
+                setErrorMessage('Unexpected response from the server. ');
+            }
+        } catch (error) {
+            setErrorMessage(err.response.data.error || 'An error ocurred while creating the user.')
+        }
+    };
+    
+
+    const handlePasswordChange = (e) => {
+        const inputPassword = e.target.value;
+        setCurrentPassword(inputPassword);
+    
+        // Validación básica de la contraseña aquí
+        // Por ejemplo, verifica si la contraseña no está vacía
+        if (!inputPassword) {
+            setIsPasswordValid(false);
+            setPasswordError('Password cannot be empty');
+        } else {
+            // Si tienes otros requisitos, colócalos aquí
+            setIsPasswordValid(true);
+            setPasswordError('');
+        }
+    };   
 
     return (
         <div>
@@ -36,25 +125,64 @@ function UserConf() {
                 <form>
                     <p></p>
                     <div className="mb-3">
-                        <label htmlFor="Name">
-                            <strong>Name</strong>
+                        <label htmlFor="FirstName*">
+                            <strong>First name (current: {user.firstName})</strong>
                         </label>
                         <input
                             type="text"
-                            placeholder= {user.firstName}
+                            placeholder="Enter new first name "
+                            autoComplete="off"
+                            name="FirstName"
+                            className="form-control rounded-0"
+                            onChange={(e) => setFirstName(e.target.value)}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="SecondName*">
+                            <strong>Second name (current: {user.secondName})</strong>
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Enter new second name "
+                            autoComplete="off"
+                            name="SecondName"
+                            className="form-control rounded-0"
+                            onChange={(e) => setSecondName(e.target.value)}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="FirstLastName*">
+                            <strong>First last name (current: {user.firstLastname})</strong>
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Enter new first last name "
                             autoComplete="off"
                             name="Name"
                             className="form-control rounded-0"
-                            onChange={(e) => setName(e.target.value)}
+                            onChange={(e) => setFirstLastName(e.target.value)}
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="SecondLastName*">
+                            <strong>Second last name (current: {user.secondLastName})</strong>
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Enter new second last Name "
+                            autoComplete="off"
+                            name="SecondLastName"
+                            className="form-control rounded-0"
+                            onChange={(e) => setSecondLastName(e.target.value)}
                         />
                     </div>
                     <div className="mb-3">
                         <label htmlFor="UserName">
-                            <strong>Username</strong>
+                            <strong>Username (current: {user.username})</strong>
                         </label>
                         <input
                             type="text"
-                            placeholder= {user.username}
+                            placeholder= 'Enter new username'
                             autoComplete="off"
                             name="username"
                             className="form-control rounded-0"
@@ -63,11 +191,11 @@ function UserConf() {
                     </div>
                     <div className="mb-3">
                         <label htmlFor="Email">
-                            <strong>Email</strong>
+                            <strong>Email (current: {user.email})</strong>
                         </label>
                         <input
                             type="text"
-                            placeholder={user.email}
+                            placeholder='Enter new email'
                             autoComplete="off"
                             name="Email"
                             className="form-control rounded-0"
@@ -76,22 +204,29 @@ function UserConf() {
                     </div>
                     <div className="mb-3">
                     <label htmlFor="Password">
-                            <strong>Password</strong>
+                            <strong>Password </strong>
                         </label>
                         <input
                             type="password"
                             placeholder="Enter current password  "
                             name="password"
-                            className="form-control rounded-0"
-                            onChange={(e) => setPassword(e.target.value)}
+                            className={`form-control rounded-0 ${!isPasswordValid ? 'is-invalid': ''}`} 
+                            id="validationServerPassword"
+                            required
+                            onChange={handlePasswordChange}
                         />
+                        {!isPasswordValid && (
+                            <div id="validationServerUsernameFeedback" className="invalid-feedback">
+                                {passwordError}
+                            </div>
+                        )}
                         <p></p>
                         <input
                             type="password"
                             placeholder="Enter the new password "
                             name="password"
                             className="form-control rounded-0"
-                            onChange={(e) => setPassword(e.target.value)}
+                            onChange={(e) => setNewPassword(e.target.value)}
                         />
                         <p></p>
                         <input
@@ -99,21 +234,7 @@ function UserConf() {
                             placeholder="Confirm the new password "
                             name="password"
                             className="form-control rounded-0"
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="Birthdate">
-                            <strong>Birthdate (traer desde base)</strong>
-                        </label>
-                        <input
-                            type="date"
-                            placeholder="Traer desde base "
-                            autoComplete="off"
-                            name="Birthdate"
-                            className="form-control rounded-0"
-                            max={new Date().toISOString().split('T')[0]}
-                            onChange={(e) => setBirthdate(e.target.value)}
+                            onChange={(e) => setPasswordConf(e.target.value)}
                         />
                     </div>
                     <div className="mb-3">
@@ -122,7 +243,6 @@ function UserConf() {
                         </label>
                         <input
                             type="file"
-                            placeholder="Traer desde base "
                             autoComplete="off"
                             name="User photo or avatar"
                             className="form-control rounded-0"
@@ -130,6 +250,9 @@ function UserConf() {
                             onChange={(e) => setAvatar(e.target.value)}
                         />
                     </div>
+                    <p></p>
+                    {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
+                    <p></p>
                     <button type="submit" className="btn btn-success w-100 rounded-10">
                         Update account
                     </button>

@@ -12,6 +12,17 @@ const getAllUsers = callback => {
     });
 };
 
+const getIdByEmail = (email, callback) => {
+    const sql = 'SELECT idUser FROM users WHERE email = ?';
+    connection.dbMySQL.query(sql, [email], (err, results) => {
+        if (err) {
+            callback({message: 'User not found', code: 'USER_NOT_FOUND'}, null);
+        } else {
+            callback(null, results[0]);
+        }
+    });
+}
+
 const getUserByEmail = (email, callback) => {
     const sql = 'SELECT * FROM users WHERE email = ?';
     connection.dbMySQL.query(sql, [email], (err, results) => {
@@ -38,7 +49,6 @@ const getPasswordByEmail = (email) => {
     return new Promise((resolve, reject) => {
         const sql = `SELECT password FROM users WHERE email = ?`;
         connection.dbMySQL.query(sql, [email], (err, results) => {
-            console.log("HIKMANXKAS");
             if (err || results.length === 0) {
                 reject({ message: 'Email not found.', code: 'USER_NOT_FOUND' });
             } else {
@@ -92,6 +102,17 @@ const createUser = (user, callback) => {
     });
 };
 
+const updatePassword = (user, callback) => {
+    const sql = `UPDATE users SET password = ? WHERE email = ?`;
+    connection.dbMySQL.query(sql, [user.password, user.email], (err, results) => {
+        if (err) {
+            callback({message: 'Password could not be saved', code: 'PASSWORD_ERROR'}, null);
+        } else {
+            callback(null, results); 
+        }
+    })
+}
+
 function decodeSQLMessage(err) {
     let message = 'An error occurred';
     switch (err.code) {
@@ -109,9 +130,11 @@ function decodeSQLMessage(err) {
 
 module.exports = {
     getAllUsers,
+    getIdByEmail,
     getUserByEmail,
     getUserByUsername,
     getPasswordByEmail,
     getPasswordByUsername,
-    createUser
+    createUser,
+    updatePassword
 }

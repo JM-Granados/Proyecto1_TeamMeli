@@ -2,7 +2,9 @@ const { Router } = require('express');
 const multer = require('multer');
 const path = require('path');
 
-const { getUsers, createUser, getPasswordByEmail, getPasswordByUsername, getUserByEmail, getUserByUsername } = require('../controllers/users.controller');
+var nodemailer = require('nodemailer');
+
+const { getUsers, createUser, getPasswordByEmail, getPasswordByUsername, getUserByEmail, getUserByUsername, passwordRecovery, setNewPassword } = require('../controllers/users.controller');
 const router = Router();
 
 
@@ -21,13 +23,19 @@ const upload = multer({ storage: storage });
 router.route('/')
     .get(getUsers)
     .post(upload.single('avatar'), createUser);
-
+    
 router.route('/email/:email')
     .post(getPasswordByEmail)
-    .get(getUserByEmail)
+    .get(getUserByEmail);
 
 router.route('/username/:username')
     .post(getPasswordByUsername)
-    .get(getUserByUsername)
+    .get(getUserByUsername);
+
+router.route('/forgot-password/:email')
+    .post(passwordRecovery);
+
+router.route('/recovery-password/:email')
+    .put(setNewPassword)
 
 module.exports = router;

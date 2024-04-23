@@ -90,7 +90,7 @@ function Signup() {
                         </label>
                         <input
                             type="text"
-                            placeholder="Enter Name "
+                            placeholder="Enter first last name "
                             autoComplete="off"
                             name="Name"
                             className="form-control rounded-0"
