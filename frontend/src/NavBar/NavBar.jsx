@@ -7,8 +7,14 @@ import User_icon from '../assets/User.png'
 import Home_icon from '../assets/casa.png'
 
 const NavBar = () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+
     const [openSettings, setOpenSettings] = useState(false);
     const [openUser, setOpenUser] = useState(false);
+
+    const getImageUrl = (avatar) => {
+        return avatar ? `http://localhost:4000/user-images/${avatar}` : `http://localhost:4000/user-images/User.png`;
+    };
 
     return (
         <div className='navbar'>
@@ -34,12 +40,16 @@ const NavBar = () => {
             </div>
             
             
-            <div className="search">
-            <img src={Search_icon} alt="" />
+            <div style={{ alignItems: 'center'}}>
+                <form class="d-flex" role="search" >
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
             </div>
+            
 
             <div className="perfil-open">
-                <img src={User_icon} alt="Open perfil" onClick={() => setOpenUser((prev) => !prev)}/>
+                <img src={getImageUrl(user.avatar)} alt="Open perfil" onClick={() => setOpenUser((prev) => !prev)} style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }}/>
                 {
                     openUser && (
                     <div className="perfil-dropdown">

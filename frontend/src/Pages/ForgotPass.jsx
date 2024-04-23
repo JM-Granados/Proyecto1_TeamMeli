@@ -4,27 +4,39 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function ForgotPass() {
-    const [email] = useState()
+    const [email, setEmail] = useState()
     const navigate = useNavigate()
+    const [errorMessage, setErrorMessage] = useState('');
 
-    const handleSubmit = (e) => {
-        e.preventDefault()
-        /*axios.post('url de base', {Email})
-        .then(result => {console.log(result)
-            navigate('/')
-        })
-        .catch(err=> console.log(err))*/
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrorMessage('');
+
+        try {
+            const result = await axios.post(`http://localhost:4000/api/users/forgot-password/${email}`, {email})
+
+            if(result.data.message === "User exist") {
+                localStorage.setItem('userRecovery', JSON.stringify({
+                    email
+                }));
+                navigate('/')
+            } else {
+                setErrorMessage('There is no account with that registered email');
+            }
+        } catch {
+            setErrorMessage('An error ocurred sending the email.');
+        }
     }
 
     return (
         <div>
             <div className = "d-flex justify-content-center align-items-center bg-secondary vh-100">
-            <div className = "bg-white p-3 rounded w-25">
-                <h2>Reset your password</h2>
-                <form>
+            <div className = "bg-white p-4 rounded w-20">
+                <h2>Forgot password</h2>
+                <form onSubmit={handleSubmit}>
                     <div className="mb-3">
                         <label htmlFor="Email">
-                            Enter your account's verified email address and we will send you a password reset.
+                            Enter your account's verified email address and we will send you a link to reset your pasword.
                         </label>
                         <input
                             type="text"
@@ -35,8 +47,11 @@ function ForgotPass() {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
+                    <p></p>
+                    {errorMessage && <div className="alert alert-danger" role="alert">{errorMessage}</div>}
+                    <p></p>
                     <button type="submit" className="btn btn-success w-100 rounded-0">
-                        Send password reset email
+                        Send email verification
                     </button>
                 </form>
             </div>

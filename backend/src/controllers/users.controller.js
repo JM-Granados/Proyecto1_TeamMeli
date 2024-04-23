@@ -5,6 +5,11 @@ const UsersModel = require('../models/Users')
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
+const fs = require('fs');
+const path = require('path');
+
+var nodemailer = require('nodemailer');
+
 usersCtrl.getUsers = async (req, res) => {
     await UsersModel.getAllUsers((err, users) => {
         if (err) {
@@ -12,6 +17,69 @@ usersCtrl.getUsers = async (req, res) => {
         } else {
             res.json({ message: 'Success', users: users });
         }
+    });
+}
+
+usersCtrl.passwordRecovery = async (req, res) => {
+    const email = req.params.email;
+    await UsersModel.getIdByEmail(email, (err, id) =>{
+        if (err) {
+            console.log("holaaa");
+            res.status(500).json({error: err.message, detail: err.detail});
+        } else {
+            console.log("VAMOOOS");
+            
+            var transporter = nodemailer.createTransport({
+                service: "gmail",
+                port: 465,
+                secure: true,
+                logger: true,
+                debug: true,
+                secureConnection: false,
+                auth: {
+                    user: 'poogr40@gmail.com',
+                    pass: 'septtczjgleebadu'
+                }, 
+                tls: {
+                    rejectUnauthorized: true
+                }
+            });
+            console.log(email);
+            
+            var mailOptions = {
+                from: 'poogr40@gmail.com',
+                to: email,
+                subject: 'Password recovery - Datahub',
+                text: `Please, enter to the next link to reset you password: \n http://localhost:5173/ResetPassword`
+            };
+
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    res.status(500).json({error: 'Email not sent', detail: 'EMAIL_NOT_SEND'});
+                } else {
+                    res.json({message: 'User exist', id: id})
+                }
+            });
+        }
+    });
+}
+
+usersCtrl.setNewPassword = async (req, res) => {
+    console.log("HOLA")
+    const { email, password } = req.body;
+    console.log(req.body);
+
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    req.body.password = hashedPassword;
+
+    console.log(req.body);
+
+    await UsersModel.updatePassword(req.body, (err, id) =>{
+        if (err) {
+            res.status(500).json({error: err.message, detail: err.detail});
+        } else {
+            res.json({message: 'Password update', id: id})   
+        }     
     });
 }
 
@@ -77,7 +145,6 @@ usersCtrl.getPasswordByUsername = async (req, res) => {
 
             
             if (match) {
-
                 res.json({ message: 'User exist and password is correct'});
             } else {
                 res.status(401).json({ error: 'Username, email or password incorrect.', detail: 'PASSWORD_INCORRECT' });
@@ -93,19 +160,44 @@ usersCtrl.getPasswordByUsername = async (req, res) => {
 
 usersCtrl.createUser = async (req, res) => {
     const { firstName, secondName, firstLastname, secondLastName, username, email, password, birthdate, avatar } = req.body;
-    console.log("HOLA");
+    const avatarPath = req.file ? req.file.filename : null;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-
 
     req.body.password = hashedPassword;
 
-    await UsersModel.createUser(req.body, (err, userId) => {
-        if (err) {
-            res.status(500).json({ error: err.message, detail: err.detail });
-        } else {
-            res.json({ message: 'User created', id: userId});
-        }
-    });
+    req.body.avatar = avatarPath;
+
+    console.log(req.body);
+
+    console.log("HOLAAAAAA\n");
+
+
+    console.log(req.file);
+
+    if (firstName === '' || firstLastname === '' || secondLastName === '' || username === '' || email === '' || password === '') {
+        const imagePath = path.join(req.file.path);
+        fs.unlink(imagePath, unlinkErr => {
+            if (unlinkErr) {
+                console.error('Error al eliminar el archivo de imagen:', unlinkErr);
+            }
+        });
+        return res.status(500).json({ error: 'You missed a required field that cannot be null. All required fields have a "*". ', detail: 'NO_DATA' });
+    } else {
+        await UsersModel.createUser(req.body, (err, userId) => {
+            if (err) {
+                const imagePath = path.join(__dirname, '..', 'UserImages', req.body.avatar);
+                fs.unlink(imagePath, unlinkErr => {
+                    if (unlinkErr) {
+                        console.error('Error al eliminar el archivo de imagen:', unlinkErr);
+                    }
+                });
+                res.status(500).json({ error: err.message, detail: err.detail });
+            } else {
+                res.json({ message: 'User created', id: userId});
+            }
+        });
+    }
+    
 }
 
 module.exports = usersCtrl;
