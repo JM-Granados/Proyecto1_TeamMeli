@@ -24,11 +24,8 @@ usersCtrl.passwordRecovery = async (req, res) => {
     const email = req.params.email;
     await UsersModel.getIdByEmail(email, (err, id) =>{
         if (err) {
-            console.log("holaaa");
             res.status(500).json({error: err.message, detail: err.detail});
-        } else {
-            console.log("VAMOOOS");
-            
+        } else {            
             var transporter = nodemailer.createTransport({
                 service: "gmail",
                 port: 465,
@@ -44,7 +41,6 @@ usersCtrl.passwordRecovery = async (req, res) => {
                     rejectUnauthorized: true
                 }
             });
-            console.log(email);
             
             var mailOptions = {
                 from: 'poogr40@gmail.com',
@@ -65,14 +61,10 @@ usersCtrl.passwordRecovery = async (req, res) => {
 }
 
 usersCtrl.setNewPassword = async (req, res) => {
-    console.log("HOLA")
     const { email, password } = req.body;
-    console.log(req.body);
 
     const hashedPassword = await bcrypt.hash(password, saltRounds);
     req.body.password = hashedPassword;
-
-    console.log(req.body);
 
     await UsersModel.updatePassword(req.body, (err, id) =>{
         if (err) {
@@ -90,7 +82,6 @@ usersCtrl.getUserByEmail = async (req, res) => {
             res.status(500).json({error: err.message, detail: err.detail});
         } else {
             res.json({message: 'User exist', user: user})
-            console.log(user.idUser);
         }
     });
 }
@@ -112,7 +103,6 @@ usersCtrl.getPasswordByEmail = async (req, res) => {
     try {
         const user = await UsersModel.getPasswordByEmail(usernameEmail);
         
-        console.log("hola")
         if (user && user.password && password) {
             // Comparar la contraseña proporcionada con la almacenada (hash)
             const match = await bcrypt.compare(password, user.password);
@@ -167,13 +157,6 @@ usersCtrl.createUser = async (req, res) => {
 
     req.body.avatar = avatarPath;
 
-    console.log(req.body);
-
-    console.log("HOLAAAAAA\n");
-
-
-    console.log(req.file);
-
     if (firstName === '' || firstLastname === '' || secondLastName === '' || username === '' || email === '' || password === '') {
         const imagePath = path.join(req.file.path);
         fs.unlink(imagePath, unlinkErr => {
@@ -199,5 +182,39 @@ usersCtrl.createUser = async (req, res) => {
     }
     
 }
+
+usersCtrl.updateUser = async (req, res) => {
+    const updates = req.body;
+    const avatarPath = req.file ? req.file.filename : null;
+    const userToChange = req.params.username
+
+
+
+    if (updates.password) {
+        const hashedPassword = await bcrypt.hash(updates.password, saltRounds);
+        updates.password = hashedPassword;
+    }
+
+    
+    if (avatarPath) {
+        updates.avatar = avatarPath; 
+    }
+
+    await UsersModel.updateUser(userToChange, updates, (err, userId) => {
+        if (err) {
+            if (avatarPath) {
+                const imagePath = path.join(__dirname, '..', 'UserImages', req.body.avatar);
+                fs.unlink(imagePath, unlinkErr => {
+                    if (unlinkErr) {
+                        console.error('Error al eliminar el archivo de imagen:', unlinkErr);
+                    }
+                });
+            }
+            res.status(500).json({ error: err.message, detail: err.detail });
+        } else {
+            res.json({ message: 'User updated', user: updates});
+        }
+    });
+} 
 
 module.exports = usersCtrl;

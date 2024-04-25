@@ -4,9 +4,10 @@ const path = require('path');
 
 var nodemailer = require('nodemailer');
 
-const { getUsers, createUser, getPasswordByEmail, getPasswordByUsername, getUserByEmail, getUserByUsername, passwordRecovery, setNewPassword } = require('../controllers/users.controller');
+const { getUsers, createUser, getPasswordByEmail, getPasswordByUsername, getUserByEmail, getUserByUsername, passwordRecovery, setNewPassword, updateUser } = require('../controllers/users.controller');
 const router = Router();
 
+const storageData = multer.memoryStorage();
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
@@ -19,6 +20,8 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage: storage });
+
+const uploadData = multer({ storage: storageData });
 
 router.route('/')
     .get(getUsers)
@@ -37,5 +40,11 @@ router.route('/forgot-password/:email')
 
 router.route('/recovery-password/:email')
     .put(setNewPassword)
+
+router.route('/update/:username')
+    .post(uploadData.single('data'), updateUser)
+
+router.route('/updateWithAvatar/:username')
+    .post(upload.single('avatar'), updateUser)
 
 module.exports = router;

@@ -102,6 +102,32 @@ const createUser = (user, callback) => {
     });
 };
 
+const updateUser = async (userToChange, updates, callback) => {
+    const fieldsToUpdate = [...Object.entries(updates)
+        .filter(([_, value]) => value !== undefined)
+        .map(([key, value]) => `${key} = ?`)];
+    
+    // Si no hay campos para actualizar, termina la ejecución
+    if (!fieldsToUpdate.length) {
+        throw new Error('No update fields provided');
+    }
+
+    const values = [...Object.values(updates).filter(value => value !== undefined), userToChange];
+
+    // Construye la parte SET de la consulta SQL
+    const setClause = fieldsToUpdate.join(', ');
+    
+    // Construye y ejecuta la consulta SQL para actualizar
+    const sql = `UPDATE users SET ${fieldsToUpdate} WHERE username = ?`;
+    connection.dbMySQL.query(sql, values, (error, result) => {
+        if (error) {
+            callback({message: 'User not updated', code: 'USER_NOT_UPDATED'}, null);
+        } else {
+            callback(null, result);
+        }
+    })
+}
+
 const updatePassword = (user, callback) => {
     const sql = `UPDATE users SET password = ? WHERE email = ?`;
     connection.dbMySQL.query(sql, [user.password, user.email], (err, results) => {
@@ -128,6 +154,7 @@ function decodeSQLMessage(err) {
     return { message, code: err.code, detail: err.sqlMessage };
 }
 
+
 module.exports = {
     getAllUsers,
     getIdByEmail,
@@ -136,5 +163,6 @@ module.exports = {
     getPasswordByEmail,
     getPasswordByUsername,
     createUser,
-    updatePassword
+    updatePassword,
+    updateUser
 }
