@@ -1,5 +1,5 @@
 /////////////////////////////////////////////
-/*
+
 //MySql
 const mysql = require('mysql2');
 const URI_mysql = process.env.MYSQL_URI;
@@ -23,7 +23,6 @@ dbMySQL.connect( (error) =>{
 module.exports = {
     dbMySQL
 }
-*/
 /////////////////////////////////////////////
 // MongoDB
 
