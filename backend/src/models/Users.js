@@ -36,8 +36,11 @@ const getUserByEmail = (email, callback) => {
 
 const getUserByUsername = (username, callback) => {
     const sql = 'SELECT * FROM users WHERE username = ?';
+    console.log(username);
     connection.dbMySQL.query(sql, [username], (err, results) => {
         if (err) {
+            callback({message: 'User not found', code: 'USER_NOT_FOUND'}, null);
+        } else if (results.length === 0) {
             callback({message: 'User not found', code: 'USER_NOT_FOUND'}, null);
         } else {
             callback(null, results[0]);

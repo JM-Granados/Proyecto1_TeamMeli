@@ -39,21 +39,24 @@ function Home() {
     return (
         <div>
             <NavBar />
-            <a href="/CreateDataSet" className='home-back'>
-                <img
-                    src={AddButton}
-                    alt="Descripción de la imagen"
-                    style={{
-                        position: 'absolute',
-                        bottom: '10px',
-                        right: '10px',
-                        width: '50px',
-                        height: 'auto'
-                    }}
-                />
-            </a>
-            <h1>Following</h1>
-            <table className="table table-striped table-borderless">
+            <h1 style={{
+                position: 'relative',
+                left: '-660px',
+                right: '200px', 
+                maxWidth: '185px', 
+                margin: 'auto', 
+                padding: '4px',
+                backgroundColor: '#fff', // Color de fondo sólido
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)', 
+                marginTop: '0.50rem', 
+                borderRadius: '1rem',
+                border: '1px solid #ccc'
+            }}>Following</h1>
+            <table className="table table-striped table-borderless" style={{
+                maxWidth: '80%', 
+                margin: 'auto',
+                backgroundColor: '#fff', // Color de fondo sólido
+            }}>
 
                 <thead>
                     <tr>

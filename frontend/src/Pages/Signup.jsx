@@ -31,13 +31,7 @@ function Signup() {
         formData.append('birthdate', birthdate !== undefined ? birthdate : "");
         formData.append('avatar', avatar !== undefined ? avatar : "");
 
-        console.log(avatar);
-
         try {
-            for (let [key, value] of formData.entries()) {
-                console.log(`${key}:`, value);
-            }  
-
             const result = await axios.post('http://localhost:4000/api/users/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
