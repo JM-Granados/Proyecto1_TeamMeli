@@ -20,6 +20,23 @@ usersCtrl.getUsers = async (req, res) => {
     });
 }
 
+usersCtrl.getFollowing = async (req, res) => {
+    const username = req.params.username;
+    console.log(username);
+    try {
+        await UsersModel.getFollowing(username, (err, user) =>{
+            if (err) {
+                console.log("todo gud")
+                res.status(500).json({error: 'User not found', detail: 'Not_Found'});
+            } else {
+                res.json({message: 'Success', user: user})
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message, detail: err.detail });
+    }
+}
+
 usersCtrl.passwordRecovery = async (req, res) => {
     const email = req.params.email;
     await UsersModel.getIdByEmail(email, (err, id) =>{

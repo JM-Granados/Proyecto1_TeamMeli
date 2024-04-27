@@ -19,7 +19,6 @@ function OtherUserAcc() {
     const [isFollowing, setIsFollowing] = useState(false);
     const [contentWidth, setContentWidth] = useState(0);
     const [errorMessage, setErrorMessage] = useState('');
-    const [showToast, setShowToast] = useState(false);
     const [searchResults, setSearchResults] = useState(null);
     const textRef = useRef(null);
 
@@ -27,48 +26,55 @@ function OtherUserAcc() {
     const followedUsername = user.username;
 
     useEffect(() => {
+        checkFollowStatus();
         if (textRef.current) {
-        setContentWidth(textRef.current.offsetWidth);
+            setContentWidth(textRef.current.offsetWidth);
         }
     }, [user.username]);
 
     useEffect(() => {
-        const checkFollowStatus = async () => {
-            try {
-                // Sustituye 'checkFollowStatusEndpoint' con la ruta correcta de tu API
-                const result = await axios.post('http://localhost:4000/api/relations/checkFollow', { followerUsername, followedUsername });
-                console.log(result.data.message);
-                if (result.data.message === "Is following") {
-                    setIsFollowing(true);
-                }
-            } catch (error) {
-                console.error('Error al verificar el estado de seguimiento', error);
-            }
-        };
-        
-        checkFollowStatus();
-
+        console.log("El estado isFollowing ha cambiado a:", isFollowing);
+        // Aquí puedes realizar más acciones que dependan del nuevo valor de isFollowing.
     }, [isFollowing]);
+    
+    const checkFollowStatus = async () => {
+        try {
+            // Sustituye 'checkFollowStatusEndpoint' con la ruta correcta de tu API
+            const result = await axios.post('http://localhost:4000/api/relations/checkFollow', { followerUsername, followedUsername });
+            setIsFollowing(result.data.message.message === "Is following");
+        } catch (error) {
+            console.error('Error al verificar el estado de seguimiento', error);
+        }
+    };
 
     const getImageUrl = (avatar) => {
         return avatar ? `http://localhost:4000/user-images/${avatar}` : `http://localhost:4000/user-images/User.png`;
     };
 
     const followUser = async () => {
-        // Datos del usuario seguidor y seguido
         const followerUsername = currentUser.username; // Deberías obtener esto de la autenticación o estado de la app
         const followedUsername = user.username;
 
         try {
-            // Llamada al backend para crear la relación de seguimiento
-            
-            const response = await axios.post('http://localhost:4000/api/relations/createRelation', { followerUsername, followedUsername });
-
-            // Si la relación se crea con éxito, actualizas el estado
-            if (response.data && response.data.success) {
-                setIsFollowing(true);
+            const check = await axios.post('http://localhost:4000/api/relations/checkFollow', { followerUsername, followedUsername });
+            if(check.data.message.message === "Is following") {
+                const response = await axios.post('http://localhost:4000/api/relations/deleteRelation', { followerUsername, followedUsername });
+                console.log(response)
+                if (response.data.message === "Relation deleted") {
+                    setIsFollowing(false);
+                } else {
+                    setErrorMessage('Cant follow this user.');
+                }
+                console.log(isFollowing);
             } else {
-                setErrorMessage('Cant follow this user.');
+                const response = await axios.post('http://localhost:4000/api/relations/createRelation', { followerUsername, followedUsername });
+                console.log(response)
+                if (response.data.message === "Relation created") {
+                    setIsFollowing(true);
+                } else {
+                    setErrorMessage('Cant follow this user.');
+                }
+                console.log(isFollowing);
             }
             
         } catch (error) {
@@ -76,6 +82,7 @@ function OtherUserAcc() {
             setErrorMessage(errorMessage); // programa la actualización del estado
         }
     };
+    console.log(isFollowing);
 
     return (
         <div>

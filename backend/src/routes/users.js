@@ -4,7 +4,7 @@ const path = require('path');
 
 var nodemailer = require('nodemailer');
 
-const { getUsers, createUser, getPasswordByEmail, getPasswordByUsername, getUserByEmail, getUserByUsername, passwordRecovery, setNewPassword, updateUser } = require('../controllers/users.controller');
+const { getUsers, createUser, getPasswordByEmail, getPasswordByUsername, getUserByEmail, getUserByUsername, passwordRecovery, setNewPassword, updateUser, getFollowing } = require('../controllers/users.controller');
 const router = Router();
 
 const storageData = multer.memoryStorage();
@@ -46,5 +46,8 @@ router.route('/update/:username')
 
 router.route('/updateWithAvatar/:username')
     .post(upload.single('avatar'), updateUser)
+
+router.route('/following/:username')
+    .get(getFollowing)
 
 module.exports = router;

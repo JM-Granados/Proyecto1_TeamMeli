@@ -6,10 +6,6 @@ const setNewRelation = async (followerUsername, followedUsername, callback) => {
             CREATE (a)-[:FOLLOWS]->(b)
             RETURN a, b 
         `;
-    
-    console.log("hoal"); 
-    console.log(followerUsername);
-    console.log(followedUsername);
 
     const neo4j = connection.NeoDriver.session();
     await neo4j 
@@ -23,6 +19,24 @@ const setNewRelation = async (followerUsername, followedUsername, callback) => {
         })
 }
 
+const deleteRelation = async (followerUsername, followedUsername, callback) => {
+    const neo = `
+            MATCH (follower:User {username: $followerUsername})-[r:FOLLOWS]->(followed:User {username: $followedUsername})
+            DELETE r
+        `;
+
+    const neo4j = connection.NeoDriver.session();
+    await neo4j 
+        .run(neo, { followerUsername, followedUsername })
+        .then(result=> {
+            neo4j.close();
+            callback(null, result);
+        })
+        .catch(error => {
+            callback({message: 'Relation not deleted', code: error}, null);
+        })
+}
+
 const checkFollow = async (followerUsername, followedUsername, callback) => {
     const neo = `
             MATCH (follower:User {username: $followerUsername})
@@ -30,22 +44,19 @@ const checkFollow = async (followerUsername, followedUsername, callback) => {
             RETURN EXISTS((follower)-[:FOLLOWS]->(followed)) AS follows
         `;
     const neo4j = connection.NeoDriver.session();
-    console.log("HOLAAA")
-    console.log(followedUsername);
     const result = await neo4j 
                         .run(neo, {followerUsername, followedUsername})
-    console.log(result.records);
     const fields = result.records[0]._fields;
     const follows = fields[0];
     if (follows === true) {
-        console.log("SI SE SIGUE")
         callback(null, {message: 'Is following'});
     } else {
-        callback({message: 'Is not following'}, null);
+        callback(null, {message: 'Is not following'});
     }
 }
 
 module.exports = {
-    setNewRelation,
-    checkFollow
+    setNewRelation, 
+    checkFollow, 
+    deleteRelation
 }
