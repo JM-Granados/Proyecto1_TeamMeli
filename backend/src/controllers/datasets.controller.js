@@ -1,36 +1,42 @@
 const datasetsCtrl = {};
-
 const DataSet = require('../models/datasets');
 
 datasetsCtrl.getDataSets = async (req, res) => {
-    const datasets = await DataSet.find();
-    res.json(datasets);
+    try {
+        const datasets = await DataSet.find();
+        res.json(datasets);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
 
-
-datasetsCtrl.getDataSet = (req, res) => res.send('GET - REQUEST DATASET')
-
+datasetsCtrl.getDataSet = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const dataset = await DataSet.findById(id);
+        if (!dataset) {
+            return res.status(404).json({ message: 'Dataset not found' });
+        }
+        res.json(dataset);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
 
 datasetsCtrl.createDataSet = async (req, res) => {
-    const { dataset_author, dataset_name, dataset_description, dataset_photo, dataset_archive, dataset_tutorial } = req.body;
+    const { dataset_author, dataset_name, dataset_description, dataset_photo, dataset_archive, dataset_tutorial, dataset_comments } = req.body;
+    console.log(req.body)
+    const newDataSet = new DataSet(
+        req.body
+    );
     
-    console.log(req.body);
-
-    console.log("HOLAAAA");
-
-    console.log(req.file);
-
-    const newDataSet = new DataSet({
-        dataset_author: req.body.dataset_author,
-        dataset_name: req.body.dataset_name,
-        dataset_description: req.body.dataset_description,
-        dataset_photo: req.body.dataset_photo,
-        dataset_archive: req.body.dataset_archive, 
-        dataset_tutorial: req.body.dataset_tutorial
-    })
-    await newDataSet.save();
-    console.log(newDataSet)
-    res.json({message: 'Dataset created :D'})
+    try {
+        const savedDataSet = await newDataSet.save(); 
+        res.status(201).json({ message: 'Dataset created :D', dataset: savedDataSet }); 
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 }
+
 
 module.exports = datasetsCtrl;

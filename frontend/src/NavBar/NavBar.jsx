@@ -12,9 +12,10 @@ const NavBar = () => {
     const [openSettings, setOpenSettings] = useState(false);
     const [openUser, setOpenUser] = useState(false);
 
+    /*
     const getImageUrl = (avatar) => {
         return avatar ? `http://localhost:4000/user-images/${avatar}` : `http://localhost:4000/user-images/User.png`;
-    };
+    };*/
 
     return (
         <div className='navbar'>
@@ -49,7 +50,8 @@ const NavBar = () => {
             
 
             <div className="perfil-open">
-                <img src={getImageUrl(user.avatar)} alt="Open perfil" onClick={() => setOpenUser((prev) => !prev)} style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }}/>
+                
+                {/* <img src={getImageUrl(user.avatar)} alt="Open perfil" onClick={() => setOpenUser((prev) => !prev)} style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }}/>
                 {
                     openUser && (
                     <div className="perfil-dropdown">
@@ -57,7 +59,7 @@ const NavBar = () => {
                         <a href="/Dm" className="perfil-item">Direct message</a>
                         <a href="/" className="perfil-item">Close session</a>
                     </div>)
-                }
+                } */}
             </div>
         </div>
     )

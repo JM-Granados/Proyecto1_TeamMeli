@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const router = Router();
 
-const { getDataSets, createDataSet } = require('../controllers/datasets.controller');
+const { getDataSets, getDataSet, createDataSet } = require('../controllers/datasets.controller'); // Agrega getDataSet a la importación
 
 const multer = require('multer');
 const path = require('path');
@@ -21,6 +21,9 @@ const upload = multer({ storage: storage });
 router.route('/')
     .get(getDataSets)
     .post(upload.any(), createDataSet);
+    
+router.route('/dataset_id/:id')
+    .get(getDataSet)
     
 module.exports = router;
 
