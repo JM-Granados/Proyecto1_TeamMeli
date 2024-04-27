@@ -12,7 +12,8 @@ function Home() {
 
     const [users, setUsers] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
-    
+
+    const navigate = useNavigate()    
     
     useEffect(() => {
         const fetchUsers = async () => {
@@ -30,6 +31,22 @@ function Home() {
 
         fetchUsers(); // Llamar a la función al montar el componente
     }, []);
+
+    const handleDmClick = (user) => {
+        // Guarda la información del usuario en localStorage
+        localStorage.setItem('selectedUser', JSON.stringify(user));
+
+        // Redirige a la página "/OtherUserAcc"
+        navigate('/Dm')
+    };
+
+    const handleViewClick = (user) => {
+        // Guarda la información del usuario en localStorage
+        localStorage.setItem('selectedUser', JSON.stringify(user));
+
+        // Redirige a la página "/OtherUserAcc"
+        navigate('/OtherUserAcc')
+    };
 
 
     const getImageUrl = (avatar) => {
@@ -72,7 +89,7 @@ function Home() {
                                 <img src={getImageUrl(user.avatar)} className="card-img-top rounded-circle" alt="Avatar" style={{ width: '75px', height: '75px', objectFit: 'cover', borderRadius: '50%' }}/>
                             </th>
                             <td className="align-middle">{user.username}</td>
-                            <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleDmClick(user)}>
                                     Direct message
                                 </button>
 
@@ -94,7 +111,7 @@ function Home() {
                                 </div>
                             </td>
 
-                            <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                            <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleViewClick(user)}>
                                     View 
                                 </button>
 

@@ -3,6 +3,7 @@ import './NavBar.css'
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom';
 
 import Search_icon from '../assets/Search.png'
 import Settings_icon from '../assets/Settings.png'
@@ -19,6 +20,8 @@ const NavBar = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [showToast, setShowToast] = useState(false);
     const [searchResults, setSearchResults] = useState(null);
+
+    const navigate = useNavigate()   
     
 
     const getImageUrl = (avatar) => {
@@ -73,6 +76,23 @@ const NavBar = () => {
         if (!event.target.closest('.search-results') && !event.target.closest('.form-control')) {
             setSearchResults(null);
         }
+    };
+
+
+    const handleDmClick = (user) => {
+        // Guarda la información del usuario en localStorage
+        localStorage.setItem('selectedUser', JSON.stringify(user));
+
+        // Redirige a la página "/OtherUserAcc"
+        navigate('/Dm')
+    };
+
+    const handleViewClick = (user) => {
+        // Guarda la información del usuario en localStorage
+        localStorage.setItem('selectedUser', JSON.stringify(user));
+
+        // Redirige a la página "/OtherUserAcc"
+        navigate('/OtherUserAcc')
     };
     
 
@@ -191,11 +211,11 @@ const NavBar = () => {
                                         <img src={getImageUrl(searchResults.avatar)} className="rounded-circle" alt="Avatar" style={{ width: '75px', height: '75px' }}/>
                                     </th>
                                     <td className="align-middle">{searchResults.username}</td>
-                                    <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleDmClick(searchResults)}>
                                             Direct message
                                         </button>
                                     </td>
-                                    <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                    <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleViewClick(searchResults)}>
                                             View 
                                         </button>
                                     </td>

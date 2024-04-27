@@ -80,10 +80,13 @@ const getPasswordByUsername = (username) => {
 
 const createUser = (user, callback) => {    
     const sql = `
-        INSERT INTO users (idUser, firstName, secondName, firstLastname, secondLastName, username, email, password, birthdate, avatar)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO users (idUser, firstName, secondName, firstLastname, secondLastName, username, email, password, birthdate, avatar)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
-    console.log(user);
+    const neo = `
+            CREATE (u: User {username: $username})
+        `;
+    
     connection.dbMySQL.query(sql, [
         null,
         user.firstName,
@@ -100,7 +103,16 @@ const createUser = (user, callback) => {
             const errorInfo = decodeSQLMessage(err); 
             callback(errorInfo, null); 
         } else {
-            callback(null, results.insertId); 
+            const neo4j = connection.NeoDriver.session();
+            neo4j
+                .run(neo, { username: user.username })
+                .then(result => {
+                    neo4j.close();
+                    callback(null, results.insertId); 
+                })
+                .catch(err => {
+                    callback({ message: err.message }, null); 
+                })
         }
     });
 };
@@ -122,11 +134,31 @@ const updateUser = async (userToChange, updates, callback) => {
     
     // Construye y ejecuta la consulta SQL para actualizar
     const sql = `UPDATE users SET ${fieldsToUpdate} WHERE username = ?`;
+    const neo = `
+            MATCH (u:User {username: $userToChange})
+            SET u.username = $newUsername
+            RETURN u
+        `;
+
     connection.dbMySQL.query(sql, values, (error, result) => {
         if (error) {
             callback({message: 'User not updated', code: 'USER_NOT_UPDATED'}, null);
         } else {
-            callback(null, result);
+            if (updates.username) {
+                const newUsername = updates.username;
+                const neo4j = connection.NeoDriver.session();
+                neo4j
+                    .run(neo, { userToChange, newUsername })
+                    .then(result => {
+                        neo4j.close();
+                        callback(null, result);
+                    })
+                    .catch(error => {
+                        callback({message: 'User not updated', code: 'USER_NOT_UPDATED'}, null);
+                    })
+            } else {
+                callback(null, result);
+            }
         }
     })
 }
