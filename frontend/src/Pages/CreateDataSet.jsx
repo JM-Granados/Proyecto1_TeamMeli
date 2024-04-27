@@ -138,7 +138,7 @@ function CreateDataSet() {
                             </li>
                             <li>
                                 <label htmlFor="videoInput" className="folderButton">
-                                    <img src="assets/archive.svg" alt="Select video" /> video
+                                    <img src="../assets/archive.svg" alt="Select video" /> video
                                     <input
                                         type="file"
                                         id="videoInput"

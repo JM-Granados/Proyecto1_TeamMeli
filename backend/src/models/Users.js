@@ -12,6 +12,41 @@ const getAllUsers = callback => {
     });
 };
 
+const getFollowing = async (username, callback) => {
+    const neo = `
+            MATCH (u:User {username: $username})-[:FOLLOWS]->(f:User)
+            RETURN f.username as username
+        `;
+
+    const neo4j = connection.NeoDriver.session();
+    await neo4j
+        .run(neo, { username })
+        .then(result => {
+            const usernames = result.records.map(record => record.get('username'));
+            const formattedUsernames = usernames.map(username => connection.dbMySQL.escape(username)).join(',');
+            neo4j.close();
+
+            const sql = `SELECT * FROM users WHERE username IN (${formattedUsernames})`;
+            
+            connection.dbMySQL.query(sql, (sqlError, results) => {
+                if (sqlError) {
+                    callback({message: 'User not found', code: 'USER_NOT_FOUND'}, null);
+                } else if (results.length === 0) {
+                    callback({message: 'User not found', code: 'USER_NOT_FOUND'}, null);
+                } else {
+                    console.log(results);
+                    callback(null, results);
+                }
+            });
+        })
+        .catch(err => {
+            console.log("mal");
+            callback({ message: err.message }, null); 
+        })
+
+    
+}
+
 const getIdByEmail = (email, callback) => {
     const sql = 'SELECT idUser FROM users WHERE email = ?';
     connection.dbMySQL.query(sql, [email], (err, results) => {
@@ -36,8 +71,11 @@ const getUserByEmail = (email, callback) => {
 
 const getUserByUsername = (username, callback) => {
     const sql = 'SELECT * FROM users WHERE username = ?';
+    console.log(username);
     connection.dbMySQL.query(sql, [username], (err, results) => {
         if (err) {
+            callback({message: 'User not found', code: 'USER_NOT_FOUND'}, null);
+        } else if (results.length === 0) {
             callback({message: 'User not found', code: 'USER_NOT_FOUND'}, null);
         } else {
             callback(null, results[0]);
@@ -77,10 +115,13 @@ const getPasswordByUsername = (username) => {
 
 const createUser = (user, callback) => {    
     const sql = `
-        INSERT INTO users (idUser, firstName, secondName, firstLastname, secondLastName, username, email, password, birthdate, avatar)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO users (idUser, firstName, secondName, firstLastname, secondLastName, username, email, password, birthdate, avatar)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         `;
-    console.log(user);
+    const neo = `
+            CREATE (u: User {username: $username})
+        `;
+    
     connection.dbMySQL.query(sql, [
         null,
         user.firstName,
@@ -97,7 +138,16 @@ const createUser = (user, callback) => {
             const errorInfo = decodeSQLMessage(err); 
             callback(errorInfo, null); 
         } else {
-            callback(null, results.insertId); 
+            const neo4j = connection.NeoDriver.session();
+            neo4j
+                .run(neo, { username: user.username })
+                .then(result => {
+                    neo4j.close();
+                    callback(null, results.insertId); 
+                })
+                .catch(err => {
+                    callback({ message: err.message }, null); 
+                })
         }
     });
 };
@@ -119,11 +169,31 @@ const updateUser = async (userToChange, updates, callback) => {
     
     // Construye y ejecuta la consulta SQL para actualizar
     const sql = `UPDATE users SET ${fieldsToUpdate} WHERE username = ?`;
+    const neo = `
+            MATCH (u:User {username: $userToChange})
+            SET u.username = $newUsername
+            RETURN u
+        `;
+
     connection.dbMySQL.query(sql, values, (error, result) => {
         if (error) {
             callback({message: 'User not updated', code: 'USER_NOT_UPDATED'}, null);
         } else {
-            callback(null, result);
+            if (updates.username) {
+                const newUsername = updates.username;
+                const neo4j = connection.NeoDriver.session();
+                neo4j
+                    .run(neo, { userToChange, newUsername })
+                    .then(result => {
+                        neo4j.close();
+                        callback(null, result);
+                    })
+                    .catch(error => {
+                        callback({message: 'User not updated', code: 'USER_NOT_UPDATED'}, null);
+                    })
+            } else {
+                callback(null, result);
+            }
         }
     })
 }
@@ -164,5 +234,6 @@ module.exports = {
     getPasswordByUsername,
     createUser,
     updatePassword,
-    updateUser
+    updateUser,
+    getFollowing
 }

@@ -12,14 +12,16 @@ function Home() {
 
     const [users, setUsers] = useState([]);
     const [errorMessage, setErrorMessage] = useState('');
-    
+
+    const navigate = useNavigate()    
     
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await axios.get("http://localhost:4000/api/users");
+                const response = await axios.get(`http://localhost:4000/api/users/following/${user.username}`);
+                console.log(response.data.user);
                 if(response.data.message === "Success") {
-                    setUsers(response.data.users);
+                    setUsers(response.data.user);
                 } else {
                     setErrorMessage('No users found');
                 }
@@ -27,9 +29,27 @@ function Home() {
                 setErrorMessage(err.response?.data.error || 'An error occurred while fetching users.');
             }
         };
-
+        
         fetchUsers(); // Llamar a la función al montar el componente
     }, []);
+    
+    console.log(users);
+
+    const handleDmClick = (user) => {
+        // Guarda la información del usuario en localStorage
+        localStorage.setItem('selectedUser', JSON.stringify(user));
+
+        // Redirige a la página "/OtherUserAcc"
+        navigate('/Dm')
+    };
+
+    const handleViewClick = (user) => {
+        // Guarda la información del usuario en localStorage
+        localStorage.setItem('selectedUser', JSON.stringify(user));
+
+        // Redirige a la página "/OtherUserAcc"
+        navigate('/OtherUserAcc')
+    };
 
 
     const getImageUrl = (avatar) => {
@@ -39,82 +59,94 @@ function Home() {
     return (
         <div>
             <NavBar />
-            <a href="/CreateDataSet" className='home-back'>
-                <img
-                    src={AddButton}
-                    alt="Descripción de la imagen"
-                    style={{
-                        position: 'absolute',
-                        bottom: '10px',
-                        right: '10px',
-                        width: '50px',
-                        height: 'auto'
-                    }}
-                />
-            </a>
-            <h1>Following</h1>
-            <table className="table table-striped table-borderless">
-
-                <thead>
-                    <tr>
-                        <th scope="col"></th>
-                        <th scope="col"></th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    {users.map((user, index) => (
-                        <tr key={user.idUser}>
-                            <th scope="row" style={{ width: '150px' }} className="align-middle">
-                                <img src={getImageUrl(user.avatar)} className="card-img-top rounded-circle" alt="Avatar" style={{ width: '75px', height: '75px', objectFit: 'cover', borderRadius: '50%' }}/>
-                            </th>
-                            <td className="align-middle">{user.username}</td>
-                            <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    Direct message
-                                </button>
-
-                                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                        <div className="modal-content">
-                                            <div className="modal-header">
-                                                <th className="modal-title fs-5" id="exampleModalLabel">TUKI</th>
-                                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div className="modal-body">
-                                            </div>
-                                            <div className="modal-footer">
-                                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="button" className="btn btn-primary">Save changes</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-
-                            <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                                    View 
-                                </button>
-
-                                <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                    <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                        <div className="modal-content">
-                                            <div className="modal-header">
-                                                <th className="modal-title fs-5" id="exampleModalLabel">TUKI</th>
-                                                <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div className="modal-body"></div>
-                                            <div className="modal-footer">
-                                                <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="button" className="btn btn-primary">Save changes</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
+            {users.length > 0 ? 
+                <table className="table table-striped table-borderless" style={{
+                    maxWidth: '80%', 
+                    margin: 'auto',
+                    marginTop: '20px',
+                    backgroundColor: '#fff', // Color de fondo sólido
+                }}>
+            
+                    <thead>
+                        <tr>
+                            <th scope="col" style={{
+                                maxWidth: '185px',
+                                margin: 'auto',
+                                backgroundColor: '#fff', // Color de fondo sólido
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)', 
+                                borderRadius: '0.50rem', // Asegúrate de que este valor se aplica correctamente
+                                fontSize: '1.5em', // Aumenta el tamaño del texto
+                                padding: '10px 0', // Añade más espacio verticalmente
+                                marginTop: '20px', // Agrega más espacio en la parte superior
+                                marginBottom: '20px', // Agrega espacio entre el encabezado y la tabla
+                                border: 'none',
+                                textAlign: 'center', // Centrar el texto horizontalmente
+                                lineHeight: 'normal'
+                            }}>Following</th>
                         </tr>
-                    ))}
-                </tbody>
-            </table>
+                    </thead>
+
+                    <tbody>
+                        {users.map((user, index) => (
+                            <tr key={user.idUser}>
+                                <th scope="row" style={{ width: '150px' }} className="align-middle">
+                                    <img src={getImageUrl(user.avatar)} className="card-img-top rounded-circle" alt="Avatar" style={{ width: '75px', height: '75px', objectFit: 'cover', borderRadius: '50%' }}/>
+                                </th>
+                                <td className="align-middle">{user.username}</td>
+                                <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleDmClick(user)}>
+                                        Direct message
+                                    </button>
+
+                                    <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                            <div className="modal-content">
+                                                <div className="modal-header">
+                                                    <th className="modal-title fs-5" id="exampleModalLabel">TUKI</th>
+                                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div className="modal-body">
+                                                </div>
+                                                <div className="modal-footer">
+                                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" className="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                <td className="align-middle"><button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" onClick={() => handleViewClick(user)}>
+                                        View 
+                                    </button>
+
+                                    <div className="modal fade" id="exampleModal" tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div className="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                                            <div className="modal-content">
+                                                <div className="modal-header">
+                                                    <th className="modal-title fs-5" id="exampleModalLabel">TUKI</th>
+                                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div className="modal-body"></div>
+                                                <div className="modal-footer">
+                                                    <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                    <button type="button" className="btn btn-primary">Save changes</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            : 
+                <div style={{
+                    textAlign: 'center',
+                    marginTop: '20px'
+                }}>
+                    <h2>No Following Users Found</h2>
+                </div>
+            }
         </div>
     )
 }

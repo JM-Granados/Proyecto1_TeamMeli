@@ -20,6 +20,23 @@ usersCtrl.getUsers = async (req, res) => {
     });
 }
 
+usersCtrl.getFollowing = async (req, res) => {
+    const username = req.params.username;
+    console.log(username);
+    try {
+        await UsersModel.getFollowing(username, (err, user) =>{
+            if (err) {
+                console.log("todo gud")
+                res.status(500).json({error: 'User not found', detail: 'Not_Found'});
+            } else {
+                res.json({message: 'Success', user: user})
+            }
+        });
+    } catch (err) {
+        res.status(500).json({ error: err.message, detail: err.detail });
+    }
+}
+
 usersCtrl.passwordRecovery = async (req, res) => {
     const email = req.params.email;
     await UsersModel.getIdByEmail(email, (err, id) =>{
@@ -88,13 +105,19 @@ usersCtrl.getUserByEmail = async (req, res) => {
 
 usersCtrl.getUserByUsername = async (req, res) => {
     const username = req.params.username;
-    await UsersModel.getUserByUsername(username, (err, user) =>{
-        if (err) {
-            res.status(500).json({error: err.message, detail: err.detail});
-        } else {
-            res.json({message: 'User exist', user: user})
-        }
-    });
+    console.log(username);
+    try {
+        await UsersModel.getUserByUsername(username, (err, user) =>{
+            if (err) {
+                console.log("todo gud")
+                res.status(500).json({error: 'User not found', detail: 'Not_Found'});
+            } else {
+                res.json({message: 'User exist', user: user})
+            }
+        });
+    } catch {
+        res.status(500).json({ error: err.message, detail: err.detail });
+    }
 }
 
 usersCtrl.getPasswordByEmail = async (req, res) => {

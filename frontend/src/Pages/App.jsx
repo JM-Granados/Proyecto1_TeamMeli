@@ -18,6 +18,7 @@ import ResetPassword from './ResetPassword';
 import Signup from './Signup'
 import UserConf from './UserConf'
 import UserDataset from './UserDataset'
+import NavBar from '../NavBar/NavBar'
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route path='/Signup' element={<Signup />}></Route>
         <Route path='/UserConf' element={<UserConf />}></Route>
         <Route path='/UserDataset' element={<UserDataset />}></Route>
+        <Route path='/NavBar' element={<NavBar />}></Route>
       </Routes>
     </BrowserRouter> 
   )

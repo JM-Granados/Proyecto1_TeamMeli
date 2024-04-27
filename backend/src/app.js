@@ -14,7 +14,11 @@ app.use(express.json());
 
 //routes
 app.use('/api/users', require('./routes/users')) 
+
 app.use('/api/datasets', require('./routes/datasets')) 
+
+app.use('/api/relations', require('./routes/relations'))
+
 app.use('/user-images', express.static(path.join(__dirname, 'UserImages')));
 
 
