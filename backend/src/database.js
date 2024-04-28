@@ -20,6 +20,7 @@
 //     }
 // })
 
+
 /////////////////////////////////////////////
 // MongoDB
 
@@ -63,26 +64,26 @@ connection.once('open', () =>{
 //Neo4j
 // const neo4j = require('neo4j-driver');
 
-const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', '123456789'));
-const session = driver.session();
+// const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', '123456789'));
+// const session = driver.session();
 
-function checkConnection() {
-    session
-        .run('MATCH (n) RETURN n LIMIT 1') // Ejecuta una consulta sencilla
-        .then(result => {
-            console.log('Neo4j is connected :D...'); 
-            session.close(); 
-        })
-        .catch(error => {
-            console.error('Error conectando a Neo4j:', error); // Mensaje de error
-        });
-}
+// function checkConnection() {
+//     session
+//         .run('MATCH (n) RETURN n LIMIT 1') // Ejecuta una consulta sencilla
+//         .then(result => {
+//             console.log('Neo4j is connected :D...'); 
+//             session.close(); 
+//         })
+//         .catch(error => {
+//             console.error('Error conectando a Neo4j:', error); // Mensaje de error
+//         });
+// }
 
-checkConnection();
+// checkConnection();
 
 /////////////////////////////////////////////
 //Raven
-const { DocumentStore } = require('ravendb');
+//const { DocumentStore } = require('ravendb');
 
 // const store = new DocumentStore('https://a.projectteammeli.ravendb.community/', 'databaseName');
 // store.initialize();
@@ -110,7 +111,7 @@ checkConnection();*/
 
 
 
-module.exports = {
-    dbMySQL,
-    NeoDriver
-}
+// module.exports = {
+//     dbMySQL,
+//     NeoDriver
+// }
