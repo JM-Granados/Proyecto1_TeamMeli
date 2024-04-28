@@ -14,69 +14,56 @@ function CreateDataSet() {
     const [dataset_tutorial, setDatasetTutorial] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
 
+    const activeUser = JSON.parse(localStorage.getItem('user'));
+
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
 
-        console.log("Dataset Author:", dataset_author);
-        console.log("Dataset Created Date:", dataset_createdDate);
-        console.log("Dataset Name:", dataset_name);
-        console.log("Dataset Description:", dataset_description);
-        console.log("Dataset Photo:", dataset_photo);
-        console.log("Dataset Archive:", dataset_archive);
-        console.log("Dataset Tutorial:", dataset_tutorial);
-        
-        // Resto del código para enviar la solicitud
-        // ...
-
         setDatasetCreatedDate(Date.now());
-        setDatasetAuthor("JM");
-        
-        const formData = new FormData();
-        formData.append('dataset_author', dataset_author);
-        formData.append('dataset_createdDate', dataset_createdDate);
-        formData.append('dataset_name', dataset_name);
-        formData.append('dataset_description', dataset_description);
-        formData.append('dataset_photo', dataset_photo);
-        dataset_archive.forEach(file => {
-            formData.append('dataset_archive', file);
-        });
-        formData.append('dataset_tutorial', dataset_tutorial);
-        
-        
-        console.log("Dataset Author:", formData.get('dataset_author'));
-        console.log("Dataset Created Date:", formData.get('dataset_createdDate'));
-        console.log("Dataset Name:", formData.get('dataset_name'));
-        console.log("Dataset Description:", formData.get('dataset_description'));
-        console.log("Dataset Photo:", formData.get('dataset_photo'));
-        
-        // Para archivos múltiples, debes verificar cuántos archivos hay en la instancia formData
-        for (let i = 0; i < formData.getAll('dataset_archive').length; i++) {
-            console.log(`Dataset Archive file ${i}:`, formData.getAll('dataset_archive')[i]);
-        }
-        
-        console.log("Dataset Tutorial:", formData.get('dataset_tutorial'));
-            
+        // //setDatasetAuthor(activeUser.firstName + ' '+ activeUser.secondName + ' '+activeUser.firstLastName + ' '+activeUser.secondLastName);
+        setDatasetAuthor("PERSONA RANDOM")
+
+        const newDataSet = {
+            dataset_author: dataset_author,
+            dataset_createdDate: dataset_createdDate,
+            dataset_name: dataset_name,
+            dataset_description: dataset_description,
+            dataset_photo: {
+                name: dataset_photo.name,
+                type: dataset_photo.type,
+                path: dataset_photo.webkitRelativePath
+            },
+            dataset_archive: dataset_archive.map(file => ({
+                archive_name: file.name,
+                archive_type: file.type,
+                archive_path: file.webkitRelativePath
+            })),
+            dataset_tutorial: {
+                name: dataset_tutorial.name,
+                type: dataset_tutorial.type,
+                path: dataset_tutorial.webkitRelativePath
+            },
+            dataset_comments: []
+        };
+
+        console.log(newDataSet)
         try {
-            const result = await axios.post('http://localhost:4000/api/datasets/', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-            console.log(result);
-            if (result.data && result.data.message === "Dataset created :D") {
-                navigate('/')
-            } else {
-                setErrorMessage('Unexpected response from the server.');
-            }
-
+            const res = await axios.post("http://localhost:4000/api/datasets", newDataSet);
+            console.log(res);
         } catch (err) {
-            setErrorMessage(err.response.data.error || 'An error occurred while creating dataset.')
+            if (err.response) {
+                // Si hay una respuesta del servidor, muestra el mensaje de error del servidor
+                setErrorMessage(err.response.data.error || 'An error ocurred while creating the user.');
+            } else {
+                // Si no hay respuesta del servidor, muestra un mensaje genérico de error
+                setErrorMessage('An error occurred. Please try again later.');
+            }
         }
+        console.log('--------------------------------- OTRO INTENTO ---------------------------------')
     }
-
     return (
         <div className="nav-container">
             <NavBar />

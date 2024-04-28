@@ -1,24 +1,24 @@
 /////////////////////////////////////////////
 
 //MySql
-const mysql = require('mysql2');
-const URI_mysql = process.env.MYSQL_URI;
+// const mysql = require('mysql2');
+// const URI_mysql = process.env.MYSQL_URI;
 
 
-const dbMySQL = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '0990',
-    database: URI_mysql
-});
+// const dbMySQL = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'root',
+//     password: '0990',
+//     database: URI_mysql
+// });
 
-dbMySQL.connect( (error) =>{
-    if(error) {
-        console.log(error);
-    }else {
-        console.log("MYSQL is connected :D...");
-    }
-})
+// dbMySQL.connect( (error) =>{
+//     if(error) {
+//         console.log(error);
+//     }else {
+//         console.log("MYSQL is connected :D...");
+//     }
+// })
 
 /////////////////////////////////////////////
 // MongoDB
@@ -42,22 +42,20 @@ connection.once('open', () =>{
 
 /////////////////////////////////////////////
 //Neo4j
-const neo4j = require('neo4j-driver');
+// const neo4j = require('neo4j-driver');
 
-const NeoDriver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', '123456789'));
-const session = NeoDriver.session();
+const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', '123456789'));
+const session = driver.session();
 
 function checkConnection() {
     session
         .run('MATCH (n) RETURN n LIMIT 1') // Ejecuta una consulta sencilla
         .then(result => {
-            console.log('Neo4j is connected :D...');
+            console.log('Neo4j is connected :D...'); 
+            session.close(); 
         })
         .catch(error => {
             console.error('Error conectando a Neo4j:', error); // Mensaje de error
-        })
-        .then(() => {
-            return session.close(); // Cierra la sesión después de ejecutar la consulta o si ocurre un error.
         });
 }
 
@@ -68,6 +66,7 @@ checkConnection();
 const { DocumentStore, GetStatisticsOperation } = require('ravendb');
 
 // Configura la tienda de documentos (DocumentStore) que es el punto de entrada principal para interactuar con RavenDB
+
 const store = new DocumentStore('http://127.0.0.1:8080', 'Messages');
 store.initialize();
 
