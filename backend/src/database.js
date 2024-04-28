@@ -40,25 +40,6 @@ connection.once('open', () =>{
     console.log('MongoDB is connected :D...');
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /////////////////////////////////////////////
 //Neo4j
 const neo4j = require('neo4j-driver');
@@ -82,48 +63,34 @@ function checkConnection() {
 
 checkConnection();
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /////////////////////////////////////////////
 //Raven
-/*const { DocumentStore } = require('ravendb');
+const { DocumentStore, GetStatisticsOperation } = require('ravendb');
 
-const store = new DocumentStore('https://a.projectteammeli.ravendb.community/', 'databaseName');
+// Configura la tienda de documentos (DocumentStore) que es el punto de entrada principal para interactuar con RavenDB
+const store = new DocumentStore('http://127.0.0.1:8080', 'Messages');
 store.initialize();
 
-/*async function checkConnection() {
+// Ahora puedes usar la tienda de documentos para acceder a tu base de datos y realizar operaciones
+async function testConnection() {
     try {
-        // Abre una sesión para interactuar con la base de datos
-        const session = store.openSession();
-        
-        // Realiza una consulta sencilla, por ejemplo, obtener todos los documentos de un tipo específico
-        const results = await session.query({ collection: 'YourCollectionName' }).all(); // Asegúrate de reemplazar 'YourCollectionName' con el nombre de tu colección
-        console.log('RavenDB is connected :D...');
-        console.log(results); // Muestra los resultados de la consulta
+        // Usa `maintenance` para enviar una operación y obtener las estadísticas de la base de datos
+        const statistics = await store.maintenance.send(new GetStatisticsOperation());
+        return true;
     } catch (error) {
-        console.error('Error conectando a RavenDB:', error);
-    } finally {
-        // Cierra el DocumentStore cuando termines
-        store.dispose();
+        console.error('Connection test failed:', error);
+        return false;
     }
 }
 
-checkConnection();*/
+testConnection().then(isConnected => {
+    if (isConnected) {
+        console.log('RavenDB is conected :D...');
+    } else {
+        console.log('No se pudo establecer conexión con la base de datos.');
+    }
+});
+
 
 /////////////////////////////////////////////
 
