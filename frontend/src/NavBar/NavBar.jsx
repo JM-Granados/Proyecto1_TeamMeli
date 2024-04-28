@@ -11,11 +11,86 @@ const NavBar = () => {
 
     const [openSettings, setOpenSettings] = useState(false);
     const [openUser, setOpenUser] = useState(false);
+    const [usernameEmail, setUsername] = useState();
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showToast, setShowToast] = useState(false);
+    const [searchResults, setSearchResults] = useState(null);
+
+    const navigate = useNavigate()   
 
     
     const getImageUrl = (avatar) => {
         return avatar ? `http://localhost:4000/user-images/${avatar}` : `http://localhost:4000/user-images/User.png`;
     };
+
+    useEffect(() => {
+        // Agrega el listener cuando el componente se monta
+        document.addEventListener('click', handlePageClick);
+    
+        // Limpieza del evento
+        return () => {
+            document.removeEventListener('click', handlePageClick);
+        };
+    }, []);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setErrorMessage('');
+        setTimeout(() => setShowToast(false), 3000);
+
+
+        console.log(usernameEmail);
+        try {
+            const result = await axios.get(`http://localhost:4000/api/users/username/${usernameEmail}`);
+            console.log(result.data.message);
+            if (result.data.message === "User exist") {
+                const user = result.data.user;
+                const username = user.username;
+                const avatar = user.avatar;
+                setSearchResults(user);                
+            } else {
+                toast.error('Unexpected response from the server.');
+                setErrorMessage('Unexpected response from the server.');
+            }
+        } catch (err) {
+            const errorMessage = err.response?.data.error || 'An error occurred while creating the user.';
+            setErrorMessage(errorMessage); // programa la actualización del estado
+            toast.error(errorMessage); // muestra el toast inmediatamente con el mensaje correcto
+        }
+    }
+
+    const handleInputChange = (e) => {
+        const value = e.target.value;
+        setUsername(value);
+        if (value.trim() === '') {
+            setSearchResults(null);
+        }
+    };
+
+    const handlePageClick = (event) => {
+        // Asegúrate de que el clic no ocurrió dentro del contenedor de búsqueda
+        if (!event.target.closest('.search-results') && !event.target.closest('.form-control')) {
+            setSearchResults(null);
+        }
+    };
+
+
+    const handleDmClick = (user) => {
+        // Guarda la información del usuario en localStorage
+        localStorage.setItem('selectedUser', JSON.stringify(user));
+
+        // Redirige a la página "/OtherUserAcc"
+        navigate('/Dm')
+    };
+
+    const handleViewClick = (user) => {
+        // Guarda la información del usuario en localStorage
+        localStorage.setItem('selectedUser', JSON.stringify(user));
+
+        // Redirige a la página "/OtherUserAcc"
+        navigate('/OtherUserAcc')
+    };
+    
 
     return (
         <div className='navbar'>

@@ -9,10 +9,12 @@ const router = Router();
 
 const storageData = multer.memoryStorage();
 
+/**GUARDA EN LA CARPETA DEL PROYECTO */
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
       cb(null, path.join(__dirname, '..', 'UserImages')); // La carpeta UserImages debe estar en el root de tu proyecto de backend
     },
+    /**AQUI METE A LA IMAGEN CON UN NOMBRE ORIGINAL */
     filename: function (req, file, cb) {
       // Guardar el archivo con un nombre único para evitar sobreescrituras.
         cb(null, Date.now() + path.extname(file.originalname))

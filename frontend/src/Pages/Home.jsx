@@ -18,6 +18,7 @@ function Home() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
+                /**TRAE LOS USERS QUE SIGO EN NEO ->USERNAME*/
                 const response = await axios.get(`http://localhost:4000/api/users/following/${user.username}`);
                 console.log(response.data.user);
                 if(response.data.message === "Success") {
@@ -65,21 +66,16 @@ function Home() {
                     margin: 'auto',
                     marginTop: '20px',
                     backgroundColor: '#fff', // Color de fondo sólido
+                    borderRadius: '0.50rem', // Aplica el border-radius aquí
+                    overflow: 'hidden', // Asegúrate de que los contenidos internos no sobresalgan
+                    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)',
                 }}>
             
                     <thead>
                         <tr>
                             <th scope="col" style={{
-                                maxWidth: '185px',
-                                margin: 'auto',
-                                backgroundColor: '#fff', // Color de fondo sólido
-                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.5)', 
-                                borderRadius: '0.50rem', // Asegúrate de que este valor se aplica correctamente
                                 fontSize: '1.5em', // Aumenta el tamaño del texto
                                 padding: '10px 0', // Añade más espacio verticalmente
-                                marginTop: '20px', // Agrega más espacio en la parte superior
-                                marginBottom: '20px', // Agrega espacio entre el encabezado y la tabla
-                                border: 'none',
                                 textAlign: 'center', // Centrar el texto horizontalmente
                                 lineHeight: 'normal'
                             }}>Following</th>
