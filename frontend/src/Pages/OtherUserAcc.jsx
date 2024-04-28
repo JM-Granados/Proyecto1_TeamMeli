@@ -16,6 +16,9 @@ function OtherUserAcc() {
     const currentUser = JSON.parse(localStorage.getItem('user'));
     const navigate = useNavigate()
 
+    /** dETERMINA EL ESTADO DE LA IMAGEN
+     * ISVOTED, SESTISVOTED
+    */
     const [isFollowing, setIsFollowing] = useState(false);
     const [contentWidth, setContentWidth] = useState(0);
     const [errorMessage, setErrorMessage] = useState('');
@@ -32,11 +35,17 @@ function OtherUserAcc() {
         }
     }, [user.username]);
 
+    /**
+     *  CAMBIA SI ISFOLLOWING CAMBIA
+     */
     useEffect(() => {
         console.log("El estado isFollowing ha cambiado a:", isFollowing);
         // Aquí puedes realizar más acciones que dependan del nuevo valor de isFollowing.
     }, [isFollowing]);
     
+    /**
+     * VA A NEO VA VER AL SEGUIDO Y SEGUIDO
+     */
     const checkFollowStatus = async () => {
         try {
             // Sustituye 'checkFollowStatusEndpoint' con la ruta correcta de tu API
@@ -54,7 +63,10 @@ function OtherUserAcc() {
     const followUser = async () => {
         const followerUsername = currentUser.username; // Deberías obtener esto de la autenticación o estado de la app
         const followedUsername = user.username;
-
+        /**
+         * ESTADO ACTUAL DE LA IMAGEN FOLLOW EN CADA CLICK
+         * AQUI TAMBIEN VA LA BITACORA DE NOTIFICACIONES CUANDO LO CREA/MATA EN NEO LO ALMACENA EN MONGO
+         */
         try {
             const check = await axios.post('http://localhost:4000/api/relations/checkFollow', { followerUsername, followedUsername });
             if(check.data.message.message === "Is following") {
@@ -62,11 +74,13 @@ function OtherUserAcc() {
                 console.log(response)
                 if (response.data.message === "Relation deleted") {
                     setIsFollowing(false);
+                    
                 } else {
                     setErrorMessage('Cant follow this user.');
                 }
                 console.log(isFollowing);
             } else {
+                /**CRERA LA REALCION DEL FOLLOW */
                 const response = await axios.post('http://localhost:4000/api/relations/createRelation', { followerUsername, followedUsername });
                 console.log(response)
                 if (response.data.message === "Relation created") {

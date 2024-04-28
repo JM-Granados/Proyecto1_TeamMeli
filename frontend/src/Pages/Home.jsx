@@ -18,6 +18,7 @@ function Home() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
+                /**TRAE LOS USERS QUE SIGO EN NEO ->USERNAME*/
                 const response = await axios.get(`http://localhost:4000/api/users/following/${user.username}`);
                 console.log(response.data.user);
                 if(response.data.message === "Success") {

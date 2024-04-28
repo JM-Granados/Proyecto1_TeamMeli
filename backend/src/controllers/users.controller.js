@@ -19,7 +19,7 @@ usersCtrl.getUsers = async (req, res) => {
         }
     });
 }
-
+/** */
 usersCtrl.getFollowing = async (req, res) => {
     const username = req.params.username;
     console.log(username);
@@ -170,7 +170,7 @@ usersCtrl.getPasswordByUsername = async (req, res) => {
         res.status(500).json({ error: err.message, detail: err.detail });
     }
 };
-
+/**EN REQ ESTA LA IMAGEN */
 usersCtrl.createUser = async (req, res) => {
     const { firstName, secondName, firstLastname, secondLastName, username, email, password, birthdate, avatar } = req.body;
     const avatarPath = req.file ? req.file.filename : null;

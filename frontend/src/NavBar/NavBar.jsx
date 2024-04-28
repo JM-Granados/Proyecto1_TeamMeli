@@ -16,8 +16,14 @@ const NavBar = () => {
 
     const [openSettings, setOpenSettings] = useState(false);
     const [openUser, setOpenUser] = useState(false);
+    const [usernameEmail, setUsername] = useState();
+    const [errorMessage, setErrorMessage] = useState('');
+    const [showToast, setShowToast] = useState(false);
+    const [searchResults, setSearchResults] = useState(null);
 
-    /*
+    const navigate = useNavigate()   
+
+    
     const getImageUrl = (avatar) => {
         return avatar ? `http://localhost:4000/user-images/${avatar}` : `http://localhost:4000/user-images/User.png`;
     };
@@ -36,6 +42,7 @@ const NavBar = () => {
         e.preventDefault();
         setErrorMessage('');
         setTimeout(() => setShowToast(false), 3000);
+
 
         console.log(usernameEmail);
         try {

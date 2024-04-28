@@ -23,8 +23,7 @@ function CreateDataSet() {
         setErrorMessage('');
 
         setDatasetCreatedDate(Date.now());
-        // //setDatasetAuthor(activeUser.firstName + ' '+ activeUser.secondName + ' '+activeUser.firstLastName + ' '+activeUser.secondLastName);
-        setDatasetAuthor("PERSONA RANDOM")
+        setDatasetAuthor(activeUser.username);
 
         const newDataSet = {
             dataset_author: dataset_author,

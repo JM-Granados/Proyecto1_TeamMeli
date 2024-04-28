@@ -11,7 +11,7 @@ const getAllUsers = callback => {
         }
     });
 };
-
+/**TRAE USUARIOS NEO Y LOS TRAE COMPLETOS DEDE MYSQL */
 const getFollowing = async (username, callback) => {
     const neo = `
             MATCH (u:User {username: $username})-[:FOLLOWS]->(f:User)

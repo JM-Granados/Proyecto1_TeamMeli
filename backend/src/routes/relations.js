@@ -6,6 +6,8 @@ const path = require('path');
 const { setNewRelation, checkFollow, deleteRelation } = require('../controllers/relations.controller');
 const router = Router();
 
+/**AQUI SE CREA EL VOTO */
+
 router.route('/createRelation')
     .post(setNewRelation)
 

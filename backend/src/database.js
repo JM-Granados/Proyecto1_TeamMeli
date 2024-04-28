@@ -1,24 +1,24 @@
 /////////////////////////////////////////////
 
 //MySql
-// const mysql = require('mysql2');
-// const URI_mysql = process.env.MYSQL_URI;
+const mysql = require('mysql2');
+const URI_mysql = process.env.MYSQL_URI;
 
 
-// const dbMySQL = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'root',
-//     password: '0990',
-//     database: URI_mysql
-// });
+const dbMySQL = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    password: '0990',
+    database: URI_mysql
+});
 
-// dbMySQL.connect( (error) =>{
-//     if(error) {
-//         console.log(error);
-//     }else {
-//         console.log("MYSQL is connected :D...");
-//     }
-// })
+dbMySQL.connect( (error) =>{
+    if(error) {
+        console.log(error);
+    }else {
+        console.log("MYSQL is connected :D...");
+    }
+})
 
 /////////////////////////////////////////////
 // MongoDB
@@ -42,10 +42,10 @@ connection.once('open', () =>{
 
 /////////////////////////////////////////////
 //Neo4j
-// const neo4j = require('neo4j-driver');
+const neo4j = require('neo4j-driver');
 
-const driver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', '123456789'));
-const session = driver.session();
+const NeoDriver = neo4j.driver('bolt://localhost', neo4j.auth.basic('neo4j', '123456789'));
+const session = NeoDriver.session();
 
 function checkConnection() {
     session

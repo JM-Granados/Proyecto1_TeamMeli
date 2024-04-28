@@ -18,7 +18,7 @@ const setNewRelation = async (followerUsername, followedUsername, callback) => {
             callback({message: 'Relation not created', code: 'RELATION_NOT_CREATED'}, null);
         })
 }
-
+/** ->  / EL ERR Y RES */
 const deleteRelation = async (followerUsername, followedUsername, callback) => {
     const neo = `
             MATCH (follower:User {username: $followerUsername})-[r:FOLLOWS]->(followed:User {username: $followedUsername})
@@ -27,10 +27,10 @@ const deleteRelation = async (followerUsername, followedUsername, callback) => {
 
     const neo4j = connection.NeoDriver.session();
     await neo4j 
-        .run(neo, { followerUsername, followedUsername })
+        .run(neo, { followerUsername, followedUsername }) /**CORRE EL QUERY */
         .then(result=> {
             neo4j.close();
-            callback(null, result);
+            callback(null, result); 
         })
         .catch(error => {
             callback({message: 'Relation not deleted', code: error}, null);
