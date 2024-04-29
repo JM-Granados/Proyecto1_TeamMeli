@@ -20,6 +20,8 @@ app.use('/api/datasets', require('./routes/datasets'))
 app.use('/api/relations', require('./routes/relations'))
 
 app.use('/user-images', express.static(path.join(__dirname, 'UserImages')));
-/**TAMBIEN HACER PARA VIDEOS Y ARCHIVOS */
+
+app.use('/api/messages', require('./routes/messages'))
+
 
 module.exports = app;

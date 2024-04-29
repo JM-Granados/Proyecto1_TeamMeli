@@ -67,14 +67,14 @@ const { DocumentStore, GetStatisticsOperation } = require('ravendb');
 
 // Configura la tienda de documentos (DocumentStore) que es el punto de entrada principal para interactuar con RavenDB
 
-const store = new DocumentStore('http://127.0.0.1:8080', 'Messages');
-store.initialize();
+const Raven = new DocumentStore('http://127.0.0.1:8080', 'Messages');
+Raven.initialize();
 
 // Ahora puedes usar la tienda de documentos para acceder a tu base de datos y realizar operaciones
 async function testConnection() {
     try {
         // Usa `maintenance` para enviar una operación y obtener las estadísticas de la base de datos
-        const statistics = await store.maintenance.send(new GetStatisticsOperation());
+        const statistics = await Raven.maintenance.send(new GetStatisticsOperation());
         return true;
     } catch (error) {
         console.error('Connection test failed:', error);
@@ -97,5 +97,6 @@ testConnection().then(isConnected => {
 
 module.exports = {
     dbMySQL,
-    NeoDriver
+    NeoDriver,
+    Raven
 }

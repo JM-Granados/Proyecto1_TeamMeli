@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import 'bootstrap/dist/css/bootstrap.min.css'
-import '../tailwind.css';
 import {BrowserRouter, Routes, Route, Link} from 'react-router-dom'
 import Clone from './Clone'
 import CreateDataSet from './CreateDataSet'
