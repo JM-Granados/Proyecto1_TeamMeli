@@ -31,6 +31,10 @@ function Signup() {
         formData.append('birthdate', birthdate !== undefined ? birthdate : "");
         formData.append('avatar', avatar !== undefined ? avatar : "");
 
+        console.log(avatar)
+        const ava = formData.get('avatar')
+        console.log(ava)
+        
         try {
             const result = await axios.post('http://localhost:4000/api/users/', formData, {
                 headers: {

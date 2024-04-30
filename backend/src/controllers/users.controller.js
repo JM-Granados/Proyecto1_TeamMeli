@@ -172,10 +172,15 @@ usersCtrl.getPasswordByUsername = async (req, res) => {
 };
 /**EN REQ ESTA LA IMAGEN */
 usersCtrl.createUser = async (req, res) => {
+    console.log("CONTROLLER USER")
+    console.log(req.file)
+
+    console.log(req.body)
     const { firstName, secondName, firstLastname, secondLastName, username, email, password, birthdate, avatar } = req.body;
+    console.log(avatar)
+    console.log(req.file.filename)
     const avatarPath = req.file ? req.file.filename : null;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
-
     req.body.password = hashedPassword;
 
     req.body.avatar = avatarPath;

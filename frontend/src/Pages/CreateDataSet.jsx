@@ -16,42 +16,104 @@ function CreateDataSet() {
 
     const activeUser = JSON.parse(localStorage.getItem('user'));
 
-    const navigate = useNavigate();
+    const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
+        /*
+        const newDataSet = new FormData();
+        newDataSet.append('dataset_author', dataset_author);
+        newDataSet.append('dataset_createdDate', dataset_createdDate);
+        newDataSet.append('dataset_name', dataset_name);
+        newDataSet.append('dataset_description', dataset_description);
+        newDataSet.append('dataset_photo', dataset_photo);
+        
 
-        setDatasetCreatedDate(Date.now());
-        setDatasetAuthor(activeUser.username);
+        console.log("PHOTO ANTES ", dataset_photo)
+        const res1 = await axios.post("http://localhost:4000/api/datasets/uploadphoto", newDataSet);
+        newDataSet.append('dataset_photo', res1);
+        console.log("PHOTO DESPUES ", res1)
 
-        const newDataSet = {
-            dataset_author: dataset_author,
-            dataset_createdDate: dataset_createdDate,
-            dataset_name: dataset_name,
-            dataset_description: dataset_description,
-            dataset_photo: {
-                name: dataset_photo.name,
-                type: dataset_photo.type,
-                path: dataset_photo.webkitRelativePath
-            },
-            dataset_archive: dataset_archive.map(file => ({
-                archive_name: file.name,
-                archive_type: file.type,
-                archive_path: file.webkitRelativePath
-            })),
-            dataset_tutorial: {
-                name: dataset_tutorial.name,
-                type: dataset_tutorial.type,
-                path: dataset_tutorial.webkitRelativePath
-            },
-            dataset_comments: []
-        };
+    
+        newDataSet.append('dataset_archive', dataset_archive);
+        console.log("ARCHIVES ANTES ", dataset_archive)
+        const da = new FormData()
+        da.append('dataset_author', dataset_author);
+        da.append('dataset_createdDate', dataset_createdDate);
+        da.append('dataset_name', dataset_name);
+        da.append('dataset_description', dataset_description);
+        let da2 = []
+        dataset_archive.forEach(file => {
+            da.append('uploadDataset_archives', file);
+            console.log("FILE ACTUAL", file)
+            const res2 = axios.post("http://localhost:4000/api/datasets/uploadarchives", da);
+            da.delete('uploadDataset_archives');
+            da2.push(res2);
+        });
+        
+        newDataSet.append('dataset_archive', da2);
+        console.log("ARCHIVES DESPUES", da2)*/
 
-        console.log(newDataSet)
+
+        const formData = new FormData();
+        formData.append('dataset_author', dataset_author);
+        formData.append('dataset_createdDate', dataset_createdDate);
+        formData.append('dataset_name', dataset_name);
+        formData.append('dataset_description', dataset_description);
+        
+        const formData2 = new FormData();
+        formData2.append('dataset_photo', dataset_photo);
+
+
+        console.log("PHOTO ANTES ", dataset_photo)
+        const res1 = await axios.post("http://localhost:4000/api/datasets/uploadphoto", formData2);
+        formData2.append('dataset_photo', res1);
+        const res = formData2.get('dataset_photo')
+        console.log("PHOTO DESPUES ", res)
+
+
+        console.log("HOLA FRONTEND")
+        console.log(dataset_archive)
+        dataset_archive.forEach(file => {
+            console.log("FILE ACTUAL", file)
+            formData.append('uploadDataset_archives', file);
+        });
+
+        axios.post("http://localhost:4000/api/datasets/uploadarchives", formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+        .then(response => {
+            console.log(response.data);
+        })
+        .catch(error => {
+            console.log(error);
+        });
+
+        const formData3 = new FormData();
+        formData3.append('dataset_tutorial', dataset_tutorial);
+        console.log("TUTORIAL ANTES ", dataset_tutorial)
+        const res3 = await axios.post("http://localhost:4000/api/datasets/uploadtutorial", formData3);
+        // newDataSet.append('dataset_tutorial', res3);
+        // console.log("TUTORIAL DESPUES ", res3)
+
+        formData.append('dataset_photo', res)
+        formData.append('dataset_tutorial', res3)
+
+        // newDataSet.append('dataset_tutorial', dataset_tutorial);
+        // console.log("TUTORIAL ANTES ", dataset_tutorial)
+        // const res3 = await axios.post("http://localhost:4000/api/datasets/uploadtutorial", newDataSet);
+        // newDataSet.append('dataset_tutorial', res3);
+        // console.log("TUTORIAL DESPUES ", res3)
+
+        // const ava = newDataSet.get('dataset_photo')
+        // console.log(ava)
         try {
-            const res = await axios.post("http://localhost:4000/api/datasets", newDataSet);
-            console.log(res);
+            const res = await axios.post("http://localhost:4000/api/datasets/", newDataSet);
+            //console.log(res);
+            navigate('/MyDataSets')
         } catch (err) {
             if (err.response) {
                 // Si hay una respuesta del servidor, muestra el mensaje de error del servidor
@@ -105,7 +167,7 @@ function CreateDataSet() {
                             </li>
                             <li>
                                 <label htmlFor="avatarInput" className="folderButton">
-                                    <img src="assets/archive.svg" alt="Select archive" />
+                                    <img src="/src/assets/folder.png" alt="Select archive" />
                                     photo
                                     <input
                                         type="file"
@@ -122,12 +184,13 @@ function CreateDataSet() {
                             </li>
                             <li>
                                 <label htmlFor="archiveInput" className="folderButton">
-                                    <img src="assets/archive.svg" alt="Select archive" /> archive
+                                    <img src="/src/assets/folder.png" alt="Select archive" /> archive
                                     <input
                                         type="file"
                                         id="archiveInput"
                                         accept="*"
                                         multiple
+                                        name="dataset_archive" 
                                         onChange={(e) => setDatasetArchive(Array.from(e.target.files))}
                                     />
                                 </label>
@@ -137,7 +200,7 @@ function CreateDataSet() {
                             </li>
                             <li>
                                 <label htmlFor="videoInput" className="folderButton">
-                                    <img src="../assets/archive.svg" alt="Select video" /> video
+                                    <img src="/src/assets/folder.png" alt="Select video" /> video
                                     <input
                                         type="file"
                                         id="videoInput"

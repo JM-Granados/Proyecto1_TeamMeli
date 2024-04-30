@@ -121,6 +121,8 @@ const createUser = (user, callback) => {
     const neo = `
             CREATE (u: User {username: $username})
         `;
+
+    
     
     connection.dbMySQL.query(sql, [
         null,

@@ -14,7 +14,10 @@ function OtherUserAcc() {
     const user = JSON.parse(localStorage.getItem('selectedUser'));
 
     const currentUser = JSON.parse(localStorage.getItem('user'));
+    
     const navigate = useNavigate()
+
+    const [datasetsUser, setDataset] = useState([]);
 
     /** dETERMINA EL ESTADO DE LA IMAGEN
      * ISVOTED, SESTISVOTED
@@ -42,7 +45,24 @@ function OtherUserAcc() {
         console.log("El estado isFollowing ha cambiado a:", isFollowing);
         // Aquí puedes realizar más acciones que dependan del nuevo valor de isFollowing.
     }, [isFollowing]);
-    
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const selectedUsername = user.username
+                const response = await axios.get(`http://localhost:4000/api/datasets/dataset_user/${selectedUsername}`);
+                console.log(response.data); // acceder a los datos de la respuesta
+                // Actualizar el estado con los datos recibidos
+                setDataset(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData(); // Llama a la función de solicitud de datos cuando el componente se monta
+    }, []); // El segundo argumento de useEffect especifica las dependencias, en este caso, está vacío
+
+
     /**
      * VA A NEO VA VER AL SEGUIDO Y SEGUIDO
      */
@@ -69,12 +89,12 @@ function OtherUserAcc() {
          */
         try {
             const check = await axios.post('http://localhost:4000/api/relations/checkFollow', { followerUsername, followedUsername });
-            if(check.data.message.message === "Is following") {
+            if (check.data.message.message === "Is following") {
                 const response = await axios.post('http://localhost:4000/api/relations/deleteRelation', { followerUsername, followedUsername });
                 console.log(response)
                 if (response.data.message === "Relation deleted") {
                     setIsFollowing(false);
-                    
+
                 } else {
                     setErrorMessage('Cant follow this user.');
                 }
@@ -90,7 +110,7 @@ function OtherUserAcc() {
                 }
                 console.log(isFollowing);
             }
-            
+
         } catch (error) {
             const errorMessage = err.response?.data.error || 'An error occurred while creating the user.';
             setErrorMessage(errorMessage); // programa la actualización del estado
@@ -98,41 +118,77 @@ function OtherUserAcc() {
     };
     console.log(isFollowing);
 
+    const selectedDataSet = async (datasetId) => {
+
+        try {
+            const response = await axios.get(`http://localhost:4000/api/datasets/dataset_id/${datasetId}`);
+            const id = datasetId;
+            const author = response.data.dataset_author;
+            const name = response.data.dataset_name;
+            const description = response.data.dataset_description;
+            const photo = response.data.dataset_photo;
+            const archives = response.data.dataset_archive;
+            const tutorial = response.data.dataset_tutorial;
+            const comments = response.data.dataset_comments;
+        
+
+            localStorage.setItem('dataset', JSON.stringify({
+                id,
+                author,
+                name,
+                description,
+                photo,
+                archives,
+                tutorial,
+                comments
+            }));
+
+            navigate('/UserDataset')
+
+
+
+        } catch (err) {
+            console.error('Error fetching selected dataset:', err);
+            setErrorMessage('Error fetching selected dataset. Please try again later.');
+        }
+
+    }
+
     return (
         <div>
-            <NavBar/>
-            <div className = "bg-white p-5 rounded">
-            <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'space-between',
-                width:  contentWidth + 400,
-                padding: '10px',
-                backgroundColor: '#fff', // Color de fondo sólido
-                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)', 
-                marginTop: '0.50rem', 
-                borderRadius: '1rem',
-                boxSizing: 'border-box',
-                border: '1px solid #ccc' 
-            }}>
-                <img 
-                    src={getImageUrl(user.avatar)} 
-                    alt="Other user profile"
-                    style={{
-                        width: "100px",
-                        height: "100px",
-                        borderRadius: '50%' 
-                    }}
-                />
-                <h2 ref={textRef} style={{ 
+            <NavBar />
+            <div className="bg-white p-5 rounded">
+                <div style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    width: contentWidth + 400,
+                    padding: '10px',
+                    backgroundColor: '#fff', // Color de fondo sólido
+                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)',
+                    marginTop: '0.50rem',
+                    borderRadius: '1rem',
+                    boxSizing: 'border-box',
+                    border: '1px solid #ccc'
+                }}>
+                    <img
+                        src={getImageUrl(user.avatar)}
+                        alt="Other user profile"
+                        style={{
+                            width: "100px",
+                            height: "100px",
+                            borderRadius: '50%'
+                        }}
+                    />
+                    <h2 ref={textRef} style={{
                         margin: '0 10px',
                         whiteSpace: 'nowrap',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis'
                     }}>
                         {user.username}
-                </h2>
-                <div style={{
+                    </h2>
+                    <div style={{
                         display: 'flex',
                         flexShrink: 0,
                     }}>
@@ -141,26 +197,41 @@ function OtherUserAcc() {
                                 src={isFollowing ? AddedButton : AddButton}
                                 alt={isFollowing ? "Unfollow User" : "Follow User"}
                                 style={{
-                                    width: '50px', 
+                                    width: '50px',
                                     height: 'auto',
                                     margin: '0 10px'
                                 }}
                             />
                         </button>
-                    <a href="/Dm">
-                        <img
-                            src={Chat}
-                            alt="Descripción de la imagen"
-                            style={{
-                                width: '50px', 
-                                height: 'auto',
-                                margin: '0 10px'
-                            }}
-                        />
-                    </a>
+                        <a href="/Dm">
+                            <img
+                                src={Chat}
+                                alt="Descripción de la imagen"
+                                style={{
+                                    width: '50px',
+                                    height: 'auto',
+                                    margin: '0 10px'
+                                }}
+                            />
+                        </a>
+                    </div>
                 </div>
             </div>
-            </div>      
+            <aside className="UserDatasets">
+                <div className="row">
+                    <ul className='listDatasets'>
+                        {
+                            datasetsUser.map(dataset =>
+                                <li className='listDatasetsItems' key={dataset._id}>
+                                    <Link className="setting-item" onClick={() => selectedDataSet(dataset._id)}>
+                                        {dataset.dataset_name}
+                                    </Link>
+                                </li>
+                            )
+                        }
+                    </ul>
+                </div>
+            </aside>
         </div>
     )
 }

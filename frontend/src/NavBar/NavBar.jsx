@@ -1,6 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react';
 import './NavBar.css'
-
+import { useNavigate } from 'react-router-dom';
 import Search_icon from '../assets/Search.png'
 import Settings_icon from '../assets/Settings.png'
 import User_icon from '../assets/User.png'
@@ -16,7 +16,7 @@ const NavBar = () => {
     const [showToast, setShowToast] = useState(false);
     const [searchResults, setSearchResults] = useState(null);
 
-    const navigate = useNavigate()   
+    const navigate = useNavigate();
 
     
     const getImageUrl = (avatar) => {

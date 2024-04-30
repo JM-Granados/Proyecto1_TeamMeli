@@ -15,6 +15,7 @@ function MyDataSets() {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                //cambiar url por el current user
                 const response = await axios.get('http://localhost:4000/api/datasets');
                 console.log(response.data); // acceder a los datos de la respuesta
                 // Actualizar el estado con los datos recibidos
@@ -32,6 +33,7 @@ function MyDataSets() {
 
         try {
             const response = await axios.get(`http://localhost:4000/api/datasets/dataset_id/${datasetId}`);
+            const id = datasetId;
             const author = response.data.dataset_author;
             const name = response.data.dataset_name;
             const description = response.data.dataset_description;
@@ -42,6 +44,7 @@ function MyDataSets() {
         
 
             localStorage.setItem('dataset', JSON.stringify({
+                id,
                 author,
                 name,
                 description,
@@ -51,7 +54,7 @@ function MyDataSets() {
                 comments
             }));
 
-            navigate('/MyDataSetInfo')
+            navigate('/UserDataset')
 
 
 

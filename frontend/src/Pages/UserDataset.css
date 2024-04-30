@@ -1,0 +1,101 @@
+/* Estilos para el contenedor principal */
+.UserDataset {
+    font-family: Arial, sans-serif;
+    
+    
+    padding: 20px;
+  }
+  
+  /* Estilos para el encabezado */
+  .UserDataset header {
+    max-width: 1000px;
+    margin-bottom: 30px;
+    margin-top: 70px;
+  }
+  
+  .header-content {
+    max-width: 1000px;
+    display: flex;
+    align-items: center;
+  }
+  
+  .UserDataset h1 {
+    max-width: 1000px;
+    font-size: 70px;
+    color: #333;
+    margin: 0;
+    /* Elimina el margen predeterminado */
+  }
+  
+  .UserDataset img {
+    max-width: 1000px;
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+  
+  
+  /* Estilos para las etiquetas de información */
+  
+  /*Con esto lo pongo a la par, importante usar aside*/
+  .infodataset {
+    max-width: 1000px;
+    float: left;
+    width: 40%;
+  }
+  
+  aside {
+    max-width: 1000px;
+    float: left;
+    width: 60%;
+    margin-top: 60px;
+    border: 2px solid #d9d9d9;
+    background-color: #d9d9d9;
+  }
+  
+  
+  
+  /*Configura las etiquetas de informacion*/
+  .infodataset ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 60px;
+  }
+  
+  .infodataset li {
+    margin-bottom: 42px;
+  }
+  
+  .infodataset span {
+    font-weight: bold;
+    font-size: 20px;
+    color: #555;
+  }
+  
+  
+  
+  .clearfix {
+    clear: both
+  }
+  
+  .nav-container {
+    width: 100%;
+    margin-left: 0%;
+}
+
+.like-button {
+  border: none;
+  background-color: #D9D9D9; /* Color de fondo del botón */
+  color: white; /* Color del texto */
+  padding: 10px 20px; /* Espaciado interno del botón */
+  border-radius: 20px; /* Radio de borde para hacerlo redondeado */
+  cursor: pointer; /* Cambiar el cursor al pasar sobre el botón */
+  display: flex; /* Hacer que el contenido sea flex para alinear elementos */
+  align-items: center; /* Alinear elementos verticalmente */
+}
+
+.like-button img {
+  height: 20px;
+  width: 30px; /* Ajustar el tamaño de la imagen */
+  margin-right: 9px; /* Espacio a la derecha de la imagen */
+}
