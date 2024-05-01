@@ -1,6 +1,6 @@
 const datasetsCtrl = {};
 const DataSet = require('../models/datasets');
-
+const fs = require('fs');
 const connection = require('../database')
 
 
@@ -40,14 +40,15 @@ datasetsCtrl.createDataSet = async (req, res) => {
         // Crear un nuevo objeto DataSet con los datos recibidos
         const newDataSet = new DataSet({
             dataset_author: req.body.dataset_author,
-            dataset_createdDate: Date.now,
+            dataset_createdDate: new Date(req.body.dataset_createdDate),
             dataset_name: req.body.dataset_name,
             dataset_description: req.body.dataset_description,
             dataset_photo: dataset_photo,
             dataset_archive: dataset_archive,
             dataset_tutorial: dataset_tutorial,
-            dataset_comments: [] // Asumiendo que dataset_comments es un array vacío por defecto
+            dataset_comments: []
         });
+        
         
         // Guardar el nuevo DataSet en la base de datos
         await newDataSet.save();
@@ -82,14 +83,15 @@ datasetsCtrl.cloneDataSet = async (req, res) => {
         // Crear un nuevo objeto DataSet con los datos recibidos
         const newDataSet = new DataSet({
             dataset_author: req.body.dataset_author,
-            dataset_createdDate: Date.now(),
+            dataset_createdDate: new Date(req.body.dataset_createdDate),
             dataset_name: req.body.dataset_name,
             dataset_description: req.body.dataset_description,
-            dataset_photo: req.body.dataset_photo,
-            dataset_archive: req.body.dataset_archive,
-            dataset_tutorial: req.body.dataset_tutorial,
-            dataset_comments: req.body.dataset_comments 
+            dataset_photo: dataset_photo,
+            dataset_archive: dataset_archive,
+            dataset_tutorial: dataset_tutorial,
+            dataset_comments: []
         });
+        
         
         // Guardar el nuevo DataSet en la base de datos
         await newDataSet.save();

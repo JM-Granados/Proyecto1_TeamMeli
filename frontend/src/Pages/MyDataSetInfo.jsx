@@ -7,7 +7,7 @@ import './MyDataSetInfo.css';
 
 function MyDataSetInfo() {
     const selectedDataSet = JSON.parse(localStorage.getItem('dataset'));
-    console.log(selectedDataSet.tutorial.name)
+    const [dataset_comment, setDatasetComment] = useState('');
     const navigate = useNavigate()
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -25,6 +25,35 @@ function MyDataSetInfo() {
 
         navigate('/Clone')
     }
+
+    const handleCreate = async () => {
+
+        try {
+            console.log(selectedDataSet)
+            const datasetId = selectedDataSet.id;
+            const username = 'random'; // Supongamos que el nombre de usuario es 'random'
+
+            // Verificar si el comentario está vacío
+            if (!dataset_comment.trim()) {
+                setErrorMessage('Please enter a comment');
+                return;
+            }
+
+            // Enviar la solicitud para agregar el comentario al servidor
+            console.log(dataset_comment)
+            const response = await axios.post('http://localhost:4000/api/datasets/dataset_comment', {
+                datasetId,
+                username,
+                dataset_comment
+            });
+
+
+        } catch (error) {
+            // Manejar errores de la solicitud
+            console.error('Error adding comment:', error);
+            setErrorMessage('Error adding comment. Please try again later.');
+        }
+    };
 
     return (
         <div className="nav-container">
@@ -83,14 +112,24 @@ function MyDataSetInfo() {
                 </section>
                 <aside className="comments">
                     <h3>Comments</h3>
-                    <ul>
-                        {selectedDataSet.comments.map((comment, index) => (
-                            <li key={index}>
-                                <p> {comment.author} : {comment.content}</p>
+                    {selectedDataSet.comments.map((comment, index) => (
+                        <li key={index}>
+                            <p> {comment.author} : {comment.content}</p>
 
-                            </li>
-                        ))}
-                    </ul>
+                        </li>
+                    ))}
+                    <div className='commentPost'>
+                        <input
+                            type="text"
+                            placeholder="Post a comment"
+                            autoComplete="off"
+                            name="datasetName"
+                            className="form-control rounded-0"
+                            onChange={(e) => setDatasetComment(e.target.value)}
+                        />
+
+                        <button onClick={handleCreate}>Post</button>
+                    </div>
                 </aside>
             </div>
         </div>

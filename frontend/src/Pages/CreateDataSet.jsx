@@ -31,7 +31,7 @@ function CreateDataSet() {
             // Create a FormData object to store form data
             const formData = new FormData();
             formData.append('dataset_author', "random");
-            formData.append('dataset_createdDate', new Date().toISOString());
+            formData.append('dataset_createdDate', Date.now().toISOString());
             formData.append('dataset_name', dataset_name);
             formData.append('dataset_description', dataset_description);
             formData.append('dataset_photo', dataset_photo);
