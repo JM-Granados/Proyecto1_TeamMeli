@@ -59,7 +59,7 @@ function MyDataSets() {
                 comments
             }));
 
-            navigate('/UserDataset')
+            navigate('/MyDataSetInfo')
 
 
 

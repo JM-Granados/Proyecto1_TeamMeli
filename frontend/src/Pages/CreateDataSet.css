@@ -115,3 +115,16 @@ aside previewImage {
     /* Ancho de la ventana */
 
 }
+
+.show-vid {
+    width: 500px; /* Ancho deseado en píxeles */
+    height: 300px; /* Alto deseado en píxeles */
+    overflow: hidden; /* Oculta cualquier parte del video que exceda el tamaño del contenedor */
+    position: relative; /* Asegura que cualquier elemento interno se posicione correctamente dentro del contenedor */
+  }
+  
+  .show-vid video {
+    width: 100%; /* Ocupa todo el ancho disponible en el contenedor */
+    height: auto; /* Calcula automáticamente la altura para mantener la proporción original del video */
+    display: block; /* Asegura que el video se muestre como un elemento de bloque dentro del contenedor */
+  }

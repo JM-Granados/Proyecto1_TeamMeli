@@ -12,12 +12,15 @@ import Chat from '../assets/Message.png'
 
 function OtherUserAcc() {
     const user = JSON.parse(localStorage.getItem('selectedUser'));
+    const selectedUsername = user.username
 
     const currentUser = JSON.parse(localStorage.getItem('user'));
     
     const navigate = useNavigate()
 
     const [datasetsUser, setDataset] = useState([]);
+
+    setDataset()
 
     /** dETERMINA EL ESTADO DE LA IMAGEN
      * ISVOTED, SESTISVOTED
@@ -32,15 +35,30 @@ function OtherUserAcc() {
     const followedUsername = user.username;
 
     useEffect(() => {
+        const fetchData = async () => {
+            try {
+                //cambiar url por el current user
+                const response = await axios.get('http://localhost:4000/api/datasets/dataset_user/${selectedUsername}');
+                //const response = await axios.get('http://localhost:4000/api/datasets/dataset_user/random');
+                console.log(response.data); // acceder a los datos de la respuesta
+                // Actualizar el estado con los datos recibidos
+                setDataset(response.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData(); // Llama a la función de solicitud de datos cuando el componente se monta
+    }, []); 
+
+    useEffect(() => {
         checkFollowStatus();
         if (textRef.current) {
             setContentWidth(textRef.current.offsetWidth);
         }
     }, [user.username]);
 
-    /**
-     *  CAMBIA SI ISFOLLOWING CAMBIA
-     */
+
     useEffect(() => {
         console.log("El estado isFollowing ha cambiado a:", isFollowing);
         // Aquí puedes realizar más acciones que dependan del nuevo valor de isFollowing.
@@ -62,10 +80,6 @@ function OtherUserAcc() {
         fetchData(); // Llama a la función de solicitud de datos cuando el componente se monta
     }, []); // El segundo argumento de useEffect especifica las dependencias, en este caso, está vacío
 
-
-    /**
-     * VA A NEO VA VER AL SEGUIDO Y SEGUIDO
-     */
     const checkFollowStatus = async () => {
         try {
             // Sustituye 'checkFollowStatusEndpoint' con la ruta correcta de tu API

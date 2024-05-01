@@ -55,11 +55,7 @@ function CreateDataSet() {
                 }
             });
 
-            if (response.status === 200) {
-                //navigate('/MyDatasets');
-            } else {
-                setErrorMessage('Error al crear el conjunto de datos');
-            }
+            navigate('/MyDatasets');
         } catch (error) {
             setErrorMessage('Error al crear el conjunto de datos');
         }

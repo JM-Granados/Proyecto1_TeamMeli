@@ -11,6 +11,13 @@ function MyDataSetInfo() {
     const navigate = useNavigate()
     const [errorMessage, setErrorMessage] = useState('');
 
+    const getImageUrl = (photo) => {
+        return photo ? `http://localhost:4000/ds-archives/${photo}` : `http://localhost:4000/ds-archives/FOLDER.png`;
+    };
+
+    const getvideoURL = (video) => {
+        return video ? `http://localhost:4000/ds-archives/${video}` : `http://localhost:4000/ds-archives/VIDEO.png`;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,7 +34,7 @@ function MyDataSetInfo() {
 
                 <header>
                     <div className="header-content">
-                        <img src="ruta-de-tu-imagen.jpg" alt="" />
+                        <img src={getImageUrl(selectedDataSet.photo)} alt="" />
                         <h1>| My Data Set</h1>
                     </div>
                 </header>
@@ -51,7 +58,7 @@ function MyDataSetInfo() {
                                 <ul>
                                     {selectedDataSet.archives && selectedDataSet.archives.map((archive, index) => (
                                         <li key={index}>
-                                            <p>Name: {archive.archive_name}</p>
+                                            <p>Name: {archive}</p>
                                             {/* <p>Type: {archive.archive_type}</p>
         <p>Path: {archive.archive_path}</p> */}
                                         </li>
@@ -61,9 +68,12 @@ function MyDataSetInfo() {
                             </div>
                         </li>
                         <li>
-                            <div className="container">
-                                <span>Tutorial</span>
-                                <p>{selectedDataSet.tutorial.name}</p>
+                            <span>Tutorial</span>
+                            <div className="show-vid">
+                                <video controls>
+                                    <source src={getvideoURL(selectedDataSet.tutorial)} type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
                             </div>
                         </li>
                     </ul>

@@ -8,42 +8,47 @@ import './Clone.css'
 
 function Clone() {
     const selectedDataSet = JSON.parse(localStorage.getItem('dataset'));
+    //const currentUser = JSON.parse(localStorage.getItem('user'));
     const [dataset_author, setDatasetAuthor] = useState('');
     const [dataset_name, setDatasetName] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [dataset_createdDate, setDatasetCreatedDate] = useState('');
 
-    //console.log(selectedDataSet.tutorial)
+    const getImageUrl = (photo) => {
+        return photo ? `http://localhost:4000/ds-archives/${photo}` : `http://localhost:4000/ds-archives/FOLDER.png`;
+    };
 
+    const getvideoURL = (video) => {
+        return video ? `http://localhost:4000/ds-archives/${video}` : `http://localhost:4000/ds-archives/VIDEO.png`;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setErrorMessage('');
 
         setDatasetCreatedDate(Date.now());
-        // //setDatasetAuthor(activeUser.firstName + ' '+ activeUser.secondName + ' '+activeUser.firstLastName + ' '+activeUser.secondLastName);
-        setDatasetAuthor("PERSONA RANDOM")
 
-        const newDataSet = {
+        const formData = {
             dataset_author: selectedDataSet.author,
-            dataset_createdDate: selectedDataSet.createdDate,
             dataset_name: dataset_name,
             dataset_description: selectedDataSet.description,
             dataset_photo: selectedDataSet.photo,
-            dataset_archive: selectedDataSet.archives.map(file => ({
-                archive_name: file.name,
-                archive_type: file.type,
-                archive_path: file.webkitRelativePath
-            })),
+            dataset_archive: selectedDataSet.archives,
             dataset_tutorial: selectedDataSet.tutorial,
             dataset_comments: selectedDataSet.comments,
-            ddataset_createdDate: dataset_createdDate
+            dataset_createdDate: new Date().toISOString()
         };
-
-        console.log(newDataSet)
+        
+        console.log(formData)
         try {
-            const res = await axios.post("http://localhost:4000/api/datasets", newDataSet);
-            console.log(res);
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
+            // Make a POST request to your backend endpoint with axios
+            const response = await axios.post("http://localhost:4000/api/datasets/dataset_cloned/",  formData)
+            navigate('/MyDatasets');
+
         } catch (err) {
             if (err.response) {
                 // Si hay una respuesta del servidor, muestra el mensaje de error del servidor
@@ -56,14 +61,13 @@ function Clone() {
         console.log('--------------------------------- OTRO INTENTO ---------------------------------')
     }
 
-
     return (
         <div className="nav-container">
             <NavBar />
             <div className="Clone">
                 <header>
                     <div className="header-content">
-                        <img src="ruta-de-tu-imagen.jpg" alt="" />
+                        <img src={getImageUrl(selectedDataSet.photo)} alt="" />
                         <h1>| My Cloned Data Set</h1>
                     </div>
                 </header>
@@ -93,7 +97,7 @@ function Clone() {
                                 <ul>
                                     {selectedDataSet.archives && selectedDataSet.archives.map((archive, index) => (
                                         <li key={index}>
-                                            <p>Name: {archive.archive_name}</p>
+                                            <p>Name: {archive}</p>
                                             {/* <p>Type: {archive.archive_type}</p>
         <p>Path: {archive.archive_path}</p> */}
                                         </li>
@@ -103,9 +107,12 @@ function Clone() {
                             </div>
                         </li>
                         <li>
-                            <div className="container">
-                                <span>Tutorial</span>
-                                <p>{selectedDataSet.tutorial.name}</p>
+                            <span>Tutorial</span>
+                            <div className="show-vid">
+                                <video controls>
+                                    <source src={getvideoURL(selectedDataSet.tutorial)} type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
                             </div>
                         </li>
                     </ul>

@@ -7,10 +7,10 @@ import './UserDataset.css';
 
 import Like from '../assets/like-gray.png'
 import notLike from '../assets/not-like-gray.png'
+import download from '../assets/download.png'
 
 function UserDataset() {
     const selectedDataSet = JSON.parse(localStorage.getItem('dataset'));
-    console.log(selectedDataSet.tutorial)
     const [dataset_comment, setDatasetComment] = useState('');
     const idDataset = selectedDataSet.id
 
@@ -20,10 +20,18 @@ function UserDataset() {
     const navigate = useNavigate()
     const [errorMessage, setErrorMessage] = useState('');
     const [isVoted, setIsVoted] = useState(false);
+    const [isDownloaded, setIsDownloaded] = useState(false);
     const textRef = useRef(null);
 
+    const getImageUrl = (photo) => {
+        return photo ? `http://localhost:4000/ds-archives/${photo}` : `http://localhost:4000/ds-archives/FOLDER.png`;
+    };
 
+    const getvideoURL = (video) => {
+        return video ? `http://localhost:4000/ds-archives/${video}` : `http://localhost:4000/ds-archives/VIDEO.png`;
+    };
 
+    const getArchivesURL = (archive) =>{ `http://localhost:4000/ds-archives/${archive}`};
 
     const handleCreate = async () => {
 
@@ -67,6 +75,11 @@ function UserDataset() {
         // Aquí puedes realizar más acciones que dependan del nuevo valor de isFollowing.
     }, [isVoted]);
 
+    useEffect(() => {
+        console.log("El estado isDownloaded ha cambiado a:", isDownloaded);
+        // Aquí puedes realizar más acciones que dependan del nuevo valor de isFollowing.
+    }, [isDownloaded]);
+
 
     const voteDataset = async () => {
         //Aqui tambien debe ir la bitacora
@@ -92,7 +105,24 @@ function UserDataset() {
             setErrorMessage(errorMessage);
         }
     };
-    
+
+    const downloadDataset = async () =>{
+
+        //Aqui tambien debe ir la bitacora
+        try {
+            const check = await axios.post('http://localhost:4000/api/relations/createDownload', { idDataset, currentUsername });
+            
+            
+
+
+            setIsDownloaded(true)
+        } catch (error) {
+            setIsDownloaded(false)
+            const errorMessage = error.response?.data.error || 'An error occurred while downloading.';
+            setErrorMessage(errorMessage);
+        }
+    };
+
     const checkVotedStatus = async () => {
         //console.log(idDataset, currentUsername)
         try {
@@ -110,7 +140,8 @@ function UserDataset() {
             <div className="UserDataset">
                 <header>
                     <div className="header-content">
-                        <img src="/backend/src/DatasetImages/${}" alt="" />
+
+                        <img src={getImageUrl(selectedDataSet.photo)} alt="" />
                         <h1>| User Data Set</h1>
                     </div>
                 </header>
@@ -134,9 +165,7 @@ function UserDataset() {
                                 <ul>
                                     {selectedDataSet.archives && selectedDataSet.archives.map((archive, index) => (
                                         <li key={index}>
-                                            <p>Name: {archive.archive_name}</p>
-                                            {/* <p>Type: {archive.archive_type}</p>
-        <p>Path: {archive.archive_path}</p> */}
+                                            <p>Name: {archive}</p>
                                         </li>
                                     ))}
 
@@ -144,16 +173,28 @@ function UserDataset() {
                             </div>
                         </li>
                         <li>
-                            <div className="container">
-                                <span>Tutorial</span>
-                                <p>{selectedDataSet.tutorial}</p>
+                        <span>Tutorial</span>
+                            <div className="show-vid">
+                                <video controls>
+                                    <source src={getvideoURL(selectedDataSet.tutorial)} type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
                             </div>
+
                         </li>
-                        <button className="like-button" onClick={voteDataset} >
-                            <img src={isVoted ? Like : notLike}
-                                alt={isVoted ? "Unvote ds" : "Vote ds"} />
-                            Like
-                        </button>
+                        <div className="button-container">
+                            <button className="button" onClick={voteDataset}>
+                                <img src={isVoted ? Like : notLike} alt={isVoted ? "Unvote ds" : "Vote ds"} />
+                                Like
+                            </button>
+                            <button className="button" onClick={downloadDataset}>
+                                <img src={download} alt="Download" />
+                                Download
+                            </button>
+                        </div>
+
+
+
 
                     </ul>
                 </section>
