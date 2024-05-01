@@ -48,7 +48,7 @@ const cors = require('cors');
 // Configurar multer para manejar los archivos adjuntos
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, path.join(__dirname, '..', 'DatasetImages'));
+        cb(null, path.join(__dirname, '..', 'DatasetArchives'));
     },
     filename: function (req, file, cb) {
         cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname))
