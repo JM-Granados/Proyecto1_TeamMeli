@@ -21,6 +21,8 @@ app.use('/api/relations', require('./routes/relations'))
 
 app.use('/user-images', express.static(path.join(__dirname, 'UserImages')));
 
+app.use('/send-files', express.static(path.join(__dirname, 'sendFiles')));
+
 app.use('/api/messages', require('./routes/messages'))
 
 

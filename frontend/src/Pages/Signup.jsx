@@ -40,10 +40,12 @@ function Signup() {
 
             console.log(result);
             if (result.data.message === "User created") {
+                
                 navigate('/')
             } else {
                 setErrorMessage('Unexpected response from the server.');
             }
+
         } catch (err) {
             setErrorMessage(err.response.data.error || 'An error ocurred while creating the user.')
         }

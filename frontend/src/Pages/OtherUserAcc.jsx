@@ -24,6 +24,11 @@ function OtherUserAcc() {
     const [errorMessage, setErrorMessage] = useState('');
     const [searchResults, setSearchResults] = useState(null);
     const textRef = useRef(null);
+    console.log("hola user")
+    console.log(user)
+    console.log("hola user22222")
+    console.log(currentUser)
+    
 
     const followerUsername = currentUser.username;
     const followedUsername = user.username;
@@ -96,7 +101,6 @@ function OtherUserAcc() {
             setErrorMessage(errorMessage); // programa la actualización del estado
         }
     };
-    console.log(isFollowing);
 
     return (
         <div>

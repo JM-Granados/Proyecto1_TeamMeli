@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import './NavBar.css'
 import axios from 'axios';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,21 +10,62 @@ import User_icon from '../assets/User.png'
 import Home_icon from '../assets/casa.png'
 import AddButton from '../assets/AddButton.png'
 
-const NavBar = () => {
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+import { Nav, Navbar, NavDropdown, Form, FormControl, Button, Collapse } from 'react-bootstrap';
+
+const NavComponent = () => {
     const user = JSON.parse(localStorage.getItem('user'));
 
-    const [openSettings, setOpenSettings] = useState(false);
-    const [openUser, setOpenUser] = useState(false);
     const [usernameEmail, setUsername] = useState();
     const [errorMessage, setErrorMessage] = useState('');
     const [showToast, setShowToast] = useState(false);
     const [searchResults, setSearchResults] = useState(null);
+    const [open, setOpen] = React.useState(false);
+    const [users, setUsers] = useState([]);
+    const [notis, setNotis] = useState(null);
 
     const navigate = useNavigate()   
 
     
     const getImageUrl = (avatar) => {
         return avatar ? `http://localhost:4000/user-images/${avatar}` : `http://localhost:4000/user-images/User.png`;
+    };
+
+
+    const handleNotis = async () => {
+        setOpen(!open);
+        try {
+            /**TRAE LOS USERS QUE SIGO EN NEO ->USERNAME*/
+            const response = await axios.get(`http://localhost:4000/api/users/following/${user.username}`);
+            console.log(response.data.user);
+            if(response.data.message === "Success") {
+                setUsers(response.data.user);
+                // Obtener notificaciones para cada usuario
+                const notificationsPromises = response.data.user.map(user =>
+                    axios.get(`http://localhost:4000/api/messages/getNotifications/${user.username}`)
+                );
+
+                // Esperar todas las respuestas de notificaciones
+                const notificationsResponses = await Promise.all(notificationsPromises);
+                
+                const allNotifications = notificationsResponses.flatMap(response => response.data);
+                
+                console.log(allNotifications);
+                
+                const sortedNotifications = allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                
+                console.log("hola array")
+                console.log(sortedNotifications);
+
+                
+                setNotis(sortedNotifications);
+            } else {
+                setErrorMessage('No users found');
+            }
+        } catch (err) {
+            setErrorMessage(err.response?.data.error || 'An error occurred while fetching users.');
+        }
     };
 
     useEffect(() => {
@@ -95,45 +135,54 @@ const NavBar = () => {
         // Redirige a la página "/OtherUserAcc"
         navigate('/OtherUserAcc')
     };
-    
 
     return (
         <>
             <ToastContainer />
-                <div className='navbar'>
-                    <div className="settings-open" style={{ display:'flex', alignItems: 'center'}}>
-                        <img 
-                            src={Settings_icon} 
-                            alt="Open settings" 
-                            onClick={() => setOpenSettings((prev) => !prev)}
-                            style={{marginRight:'18px'}}
-                        />
-                        {
-                            openSettings && (
-                            <div className="settings-dropdown">
-                                <a href="/MyDataSets" className="setting-item">My DataSets</a>
-                                <a href="/MyVotes" className="setting-item">My Votes</a>
-                                <a href="/DataSetsNotis" className="setting-item">Datasets notifications</a>
-                            </div>)
-                        }
-
-                        <a href="/Home" className='home-back'>
-                            <img src={Home_icon} alt="home"/>                
-                        </a>
-                    </div>
-                    
-                    
+            <Navbar bg="light" expand="lg">
+                <div className="perfil-open" style={{ display:'flex', alignItems: 'center', marginRight: '10px'}}>
+                        <img src={getImageUrl(user.avatar)} alt="Open perfil" style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }}/>
+                </div>
+                <Navbar.Brand href="/Home">DataHub</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="me-auto">
+                        <NavDropdown title="Profile" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="/Dm">Direct Message</NavDropdown.Item>
+                            <NavDropdown.Item href="/UserConf">User configuration</NavDropdown.Item>
+                            <NavDropdown.Divider />
+                            <NavDropdown.Item href="/">Close session</NavDropdown.Item>
+                        </NavDropdown>
+                        <NavDropdown title="DataSets" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="/MyDataSets">My Datasets</NavDropdown.Item>
+                            <NavDropdown.Item href="/MyVotes">My Votes</NavDropdown.Item>
+                        </NavDropdown>
+                        <Nav.Link href="/CreateDataSet">New DataSet</Nav.Link>
+                        <Nav.Link 
+                            onClick={() => handleNotis()}
+                            aria-expanded={open}
+                        >
+                            Notifications
+                        </Nav.Link>
+                    </Nav>
+                </Navbar.Collapse>
                     <div style={{ position: 'relative' }}>
+                        <Nav className="me-auto">
+                            <Form className="d-flex" onSubmit={handleSubmit}>
+                                <FormControl
+                                    type="search"
+                                    placeholder="Search users by username or datasets by name or description"
+                                    className="me-2"
+                                    aria-label="Search"
+                                    style={{ width: '500px' }}
+                                    onChange={handleInputChange}
+                                />
+                                <Button variant="outline-success" type="submit">Search</Button>
+                            </Form>
+                        </Nav>
+                        <div style={{ position: 'relative' }}>
                         <form class="d-flex" role="search" onSubmit={handleSubmit}>
-                            <input 
-                                class="form-control me-2" 
-                                type="search" 
-                                placeholder="Search users by username or datasets by name or description" 
-                                aria-label="Search"
-                                style={{ width: '500px' }}
-                                onChange={handleInputChange}
-                            />
-                            <button class="btn btn-outline-success" type="submit">Search</button>
+                            
                             <style>
                                 {`
                                     @keyframes fadeInOut {
@@ -146,7 +195,7 @@ const NavBar = () => {
                                             transform: translateY(0);
                                         }
                                     }
-                                `}
+                                    `}
                             </style>
                             <div style={{
                                     position: 'fixed',
@@ -163,31 +212,13 @@ const NavBar = () => {
                             </div>
                         </form>
                     </div>
-
-                    <div className="perfil-open" style={{ display:'flex', alignItems: 'center'}}>
-                        <a href="/CreateDataSet" className='home-back'>
-                            <img
-                                src={AddButton}
-                                alt="Descripción de la imagen"
-                            />
-                        </a>
-                        <img src={getImageUrl(user.avatar)} alt="Open perfil" onClick={() => setOpenUser((prev) => !prev)} style={{ width: '35px', height: '35px', objectFit: 'cover', borderRadius: '50%' }}/>
-                        {
-                            openUser && (
-                            <div className="perfil-dropdown">
-                                <a href="/UserConf" className="perfil-item">Profile settings</a>
-                                <a href="/Dm" className="perfil-item">Direct message</a>
-                                <a href="/" className="perfil-item">Close session</a>
-                            </div>)
-                        }
-                    </div>
                 </div>
                 {searchResults && (
                     <div style={{ 
                         position: 'absolute', 
-                        top: '7%', 
-                        left: '0px', 
-                        right: '70px', 
+                        top: '100%', 
+                        left: '80px', 
+                        right: '-490px', 
                         zIndex: '1050px',
                         maxWidth: '500px', 
                         margin: 'auto', 
@@ -225,10 +256,49 @@ const NavBar = () => {
                         </table>
                     </div>
                 )}
+            </Navbar>
+            <Collapse in={open} style={{ 
+                                        position: 'absolute', 
+                                        top: '7%', 
+                                        left: '0px', 
+                                        right: '900px', 
+                                        zIndex: '1050px',
+                                        maxWidth: '500px', 
+                                        margin: 'auto', 
+                                        maxHeight: '300px', // Limita la altura máxima
+                                        overflowY: 'auto', // Permite scroll
+                                        backgroundColor: '#fff', 
+                                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.5)', 
+                                        marginTop: '0.10rem', 
+                                        borderRadius: '1rem',
+                                        border: '1px solid #ccc',
+                                        boxSizing: 'border-box',
+                                        padding: '10px'}}>
+                <div id="example-collapse-text" className="card card-body" style={{ fontSize: '12px', fontWeight: '300' }}> {/* Ajusta el tamaño y el grosor de la letra globalmente para la tarjeta */}
+                    {notis ? (
+                        notis.map((chat, index) => (
+                            <div key={chat.id || index}>
+                                <div style={{ marginBottom: '5px' }}> {/* Añade espacio entre notificaciones */}
+                                    <span style={{ fontWeight: '400' }}>{chat.text}</span>
+                                    <br />
+                                    <span style={{ color: '#6c757d' }}>{new Date(chat.createdAt).toLocaleString()}</span>
+                                </div>
+                                <hr style={{
+                                    width: "100%",
+                                    border: "1px solid #eee", // Hace la línea más sutil
+                                    margin: "5px 0" // Espacio sobre y bajo el separador
+                                }} />
+                            </div>
+                        ))
+                    ) : (
+                        <span>
+                            No notifications...
+                        </span>
+                    )}
+                </div>
+            </Collapse>
         </>
-    )
-}
+    );
+};
 
-
-export default NavBar;
-
+export default NavComponent;
