@@ -10,10 +10,11 @@ import notLike from '../assets/not-like-gray.png'
 
 function UserDataset() {
     const selectedDataSet = JSON.parse(localStorage.getItem('dataset'));
+    console.log(selectedDataSet.tutorial)
     const [dataset_comment, setDatasetComment] = useState('');
     const idDataset = selectedDataSet.id
 
-    //const currentUser = JSON.parse(localStorage.getItem('user'));
+    //const currentUsername = JSON.parse(localStorage.getItem('user'));
     const currentUsername = "random";
 
     const navigate = useNavigate()
@@ -109,7 +110,7 @@ function UserDataset() {
             <div className="UserDataset">
                 <header>
                     <div className="header-content">
-                        <img src="ruta-de-tu-imagen.jpg" alt="" />
+                        <img src="/backend/src/DatasetImages/${}" alt="" />
                         <h1>| User Data Set</h1>
                     </div>
                 </header>
@@ -145,7 +146,7 @@ function UserDataset() {
                         <li>
                             <div className="container">
                                 <span>Tutorial</span>
-                                <p>{selectedDataSet.tutorial.name}</p>
+                                <p>{selectedDataSet.tutorial}</p>
                             </div>
                         </li>
                         <button className="like-button" onClick={voteDataset} >

@@ -12,10 +12,15 @@ function MyDataSets() {
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate()
 
+    //const currentUser = JSON.parse(localStorage.getItem('user'));
+    const currentUser = "random"
+
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 //cambiar url por el current user
+                //const response = await axios.get('http://localhost:4000/api/datasets/dataset_user/${currentUser}');
                 const response = await axios.get('http://localhost:4000/api/datasets');
                 console.log(response.data); // acceder a los datos de la respuesta
                 // Actualizar el estado con los datos recibidos

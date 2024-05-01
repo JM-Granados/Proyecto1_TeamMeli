@@ -4,12 +4,18 @@ const cors = require('cors');
 const app = express();
 
 const path = require('path');
+const multer  = require('multer');
+const upload = multer();
 
 //settings
 app.set('port', 4000);
 
 //middlewares
+
+//app.use(upload.array()); 
 app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173' }));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 //routes

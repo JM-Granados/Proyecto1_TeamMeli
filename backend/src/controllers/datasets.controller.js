@@ -3,31 +3,31 @@ const DataSet = require('../models/datasets');
 
 const connection = require('../database')
 
-const path = require('path')
-const multer = require('multer')
+// const path = require('path')
+// const multer = require('multer')
 
-const storage = multer.diskStorage({
-    destination: function(req, file, cb){
-        cb(null,'./DatasetImages/' )
-    },
-    filename:function(req, file, cb){
-        let ext = path.extname(file.originalname)
-        cb(null, Date.now()+ext)
-    }
-})
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//         cb(null, './DatasetImages/')
+//     },
+//     filename: function (req, file, cb) {
+//         let ext = path.extname(file.originalname)
+//         cb(null, Date.now() + ext)
+//     }
+// })
 
-const upload = multer({
-    storage: storage,
-    fileFilter: function(req, file, callback){
-        if(
-            file.mimetype == "*"
-        ){
-            callback( null, true,)
-        }else{
-            console.log("FILE TYPE NOT SUPORTED")
-        }
-    }
-})
+// const upload = multer({
+//     storage: storage,
+//     fileFilter: function (req, file, callback) {
+//         if (
+//             file.mimetype == "*"
+//         ) {
+//             callback(null, true,)
+//         } else {
+//             console.log("FILE TYPE NOT SUPORTED")
+//         }
+//     }
+// })
 
 
 datasetsCtrl.getDataSets = async (req, res) => {
@@ -53,48 +53,85 @@ datasetsCtrl.getDataSet = async (req, res) => {
 }
 
 datasetsCtrl.createDataSet = async (req, res) => {
-    // console.log("CONTROLLER dataset")
-    // console.log(req.file)
-    const { dataset_author, dataset_name, dataset_description, dataset_comments } = req.body;
-    //console.log(req.file.path)
-    //req.file.path
-
-    //const newDataSet = new DataSet(req.body);
-    const newDataSet = new DataSet({
-        dataset_author: req.body.dataset_author,
-        dataset_name: req.body.dataset_name,
-        dataset_description: req.body.dataset_description
-        //dataset_photo: req.body.dataset_photo,
-        // dataset_archive: req.body.dataset_archive, 
-        // dataset_tutorial: req.body.dataset_tutorial
-    })
-    
+    console.log("REQ FILE", req.files)
+    // En tu archivo datasets.controller.js
 
     try {
-        const savedDataSet = await newDataSet.save();
-        const newdsid = savedDataSet._id.toString(); // Guardar el ID del nuevo conjunto de datos
-        //console.log(newdsid)
-        const neo = `
-    CREATE (d:DS {id: $newdsid}) // Usar el ID del nuevo conjunto de datos en la consulta
-`;
+        console.log("REQ BODY", req.body); // Aquí deberías ver los datos que esperas recibir
+        // Ahora puedes crear un nuevo DataSet utilizando los datos recibidos en req.body
+        const newDataSet = new DataSet({
+            dataset_author: req.body.dataset_author,
+            dataset_createdDate: req.body.dataset_createdDate,
+            dataset_name: req.body.dataset_name,
+            dataset_description: req.body.dataset_description,
+            dataset_photo: req.body.dataset_photo,
+            dataset_archive: req.body.dataset_archive,
+            dataset_tutorial: req.body.dataset_tutorial,
+            dataset_comments: req.body.dataset_comments
+        });
 
-        const neo4j = connection.NeoDriver.session();
-        neo4j
-            .run(neo, { newdsid }) // Pasar el ID del nuevo conjunto de datos como parámetro
-            .then(result => {
-                neo4j.close();
-                res.status(201).json({ message: 'Dataset created :D', dataset: savedDataSet });
-            })
-            .catch(err => {
-                console.log("Error executing Neo4j query:", err);
-                res.status(500).json({ message: err.message });
-            });
+        // Guardar el nuevo DataSet en la base de datos
+        //await newDataSet.save();
+        console.log("NEW DATASET", newDataSet);
+        JJJJ
+        // const neo = `
+        // //     CREATE (d:DS {id: $newdsid}) // Usar el ID del nuevo conjunto de datos en la consulta
+        // // `;
+    
+        // //         const neo4j = connection.NeoDriver.session();
+        // //         neo4j
+        // //             .run(neo, { newdsid }) // Pasar el ID del nuevo conjunto de datos como parámetro
+        // //             .then(result => {
+        // //                 neo4j.close();
+        // //                 res.status(201).json({ message: 'Dataset created :D', dataset: savedDataSet });
+        // //             })
+        // //             .catch(err => {
+        // //                 console.log("Error executing Neo4j query:", err);
+        // //                 res.status(500).json({ message: err.message });
+        // //             });
+        // // Respuesta exitosa
+        res.status(200).json({ message: 'DataSet created successfully' });
     } catch (error) {
-        console.log("NO SE CREO");
-        res.status(500).json({ message: 'Error saving dataset in MongoDB', error: error });
+        // Si hay un error, responder con el código de estado 500 y el mensaje de error
+        console.error('Error creating DataSet:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-}
 
+
+    //     const { dataset_author, dataset_name, dataset_description, dataset_photo, dataset_archive, dataset_tutorial } = req.body;
+    //     const newDataSet = new DataSet({
+    //         dataset_author: dataset_author,
+    //         dataset_name: dataset_name,
+    //         dataset_description: dataset_description,
+    //         dataset_photo: dataset_photo,
+    //         dataset_archive: dataset_archive, 
+    //         dataset_tutorial: dataset_tutorial
+    //     })
+
+    //     try {
+    //         const savedDataSet = await newDataSet.save();
+    //         const newdsid = savedDataSet._id.toString(); // Guardar el ID del nuevo conjunto de datos
+    //         //console.log(newdsid)
+    //         const neo = `
+    //     CREATE (d:DS {id: $newdsid}) // Usar el ID del nuevo conjunto de datos en la consulta
+    // `;
+
+    //         const neo4j = connection.NeoDriver.session();
+    //         neo4j
+    //             .run(neo, { newdsid }) // Pasar el ID del nuevo conjunto de datos como parámetro
+    //             .then(result => {
+    //                 neo4j.close();
+    //                 res.status(201).json({ message: 'Dataset created :D', dataset: savedDataSet });
+    //             })
+    //             .catch(err => {
+    //                 console.log("Error executing Neo4j query:", err);
+    //                 res.status(500).json({ message: err.message });
+    //             });
+    //     } catch (error) {
+    //         console.log(error);
+    //         res.status(500).json({ message: 'Error saving dataset in MongoDB', error: error });
+    //     }
+};
 
 
 datasetsCtrl.getDataSetsbyUser = async (req, res) => {
@@ -136,12 +173,12 @@ datasetsCtrl.addCommentToDataSet = async (req, res) => {
 }
 
 
-datasetsCtrl.uploadDataset_photo = (req, res)=>{
-    console.log("UPLOAD PHOTO")
-    console.log(req.file);
-    const photo = req.file.fieldname
+datasetsCtrl.uploadDataset_photo = (req, res) => {
+    // console.log("UPLOAD PHOTO")
+    // console.log(req.file);
+    const photo = req.file.filename
     res.json(photo);
- }
+}
 
 
 /*datasetsCtrl.uploadDataset_archives = (req, res) => {
@@ -152,17 +189,22 @@ datasetsCtrl.uploadDataset_photo = (req, res)=>{
 }*/
 
 datasetsCtrl.uploadDataset_archives = (req, res) => {
-    console.log("HOLAAAAAAAAA CONTROLLER")
+    // console.log("HOLAAAAAAAAA CONTROLLER")
     console.log("Archivos recibidos: ", req.files);
-    let paths = req.files.map(file => file.fieldname).join(',');
-    res.json({ paths });
+    //let path = req.files.map(file => file.fieldname).join(',');
+    let path = ''
+    req.files.forEach(function (files, index, arr) {
+        path = path + files.originalname + '-' + Date.now() + ','
+    });
+    console.log("FINAL PATH", path)
+    res.json({ path });
 }
 
 
- datasetsCtrl.uploadDataset_tutorial = (req, res)=>{
+datasetsCtrl.uploadDataset_tutorial = (req, res) => {
     const tutorial = req.file.filename
     res.json(tutorial);
- }
+}
 
 
 

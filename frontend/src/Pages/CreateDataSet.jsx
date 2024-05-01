@@ -19,112 +19,54 @@ function CreateDataSet() {
     const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        setErrorMessage('');
-        /*
-        const newDataSet = new FormData();
-        newDataSet.append('dataset_author', dataset_author);
-        newDataSet.append('dataset_createdDate', dataset_createdDate);
-        newDataSet.append('dataset_name', dataset_name);
-        newDataSet.append('dataset_description', dataset_description);
-        newDataSet.append('dataset_photo', dataset_photo);
-        
+        e.preventDefault(); // Prevent the default form submission behavior
 
-        console.log("PHOTO ANTES ", dataset_photo)
-        const res1 = await axios.post("http://localhost:4000/api/datasets/uploadphoto", newDataSet);
-        newDataSet.append('dataset_photo', res1);
-        console.log("PHOTO DESPUES ", res1)
-
-    
-        newDataSet.append('dataset_archive', dataset_archive);
-        console.log("ARCHIVES ANTES ", dataset_archive)
-        const da = new FormData()
-        da.append('dataset_author', dataset_author);
-        da.append('dataset_createdDate', dataset_createdDate);
-        da.append('dataset_name', dataset_name);
-        da.append('dataset_description', dataset_description);
-        let da2 = []
-        dataset_archive.forEach(file => {
-            da.append('uploadDataset_archives', file);
-            console.log("FILE ACTUAL", file)
-            const res2 = axios.post("http://localhost:4000/api/datasets/uploadarchives", da);
-            da.delete('uploadDataset_archives');
-            da2.push(res2);
-        });
-        
-        newDataSet.append('dataset_archive', da2);
-        console.log("ARCHIVES DESPUES", da2)*/
-
-
-        const formData = new FormData();
-        formData.append('dataset_author', dataset_author);
-        formData.append('dataset_createdDate', dataset_createdDate);
-        formData.append('dataset_name', dataset_name);
-        formData.append('dataset_description', dataset_description);
-        
-        const formData2 = new FormData();
-        formData2.append('dataset_photo', dataset_photo);
-
-
-        console.log("PHOTO ANTES ", dataset_photo)
-        const res1 = await axios.post("http://localhost:4000/api/datasets/uploadphoto", formData2);
-        formData2.append('dataset_photo', res1);
-        const res = formData2.get('dataset_photo')
-        console.log("PHOTO DESPUES ", res)
-
-
-        console.log("HOLA FRONTEND")
-        console.log(dataset_archive)
-        dataset_archive.forEach(file => {
-            console.log("FILE ACTUAL", file)
-            formData.append('uploadDataset_archives', file);
-        });
-
-        axios.post("http://localhost:4000/api/datasets/uploadarchives", formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-        .then(response => {
-            console.log(response.data);
-        })
-        .catch(error => {
-            console.log(error);
-        });
-
-        const formData3 = new FormData();
-        formData3.append('dataset_tutorial', dataset_tutorial);
-        console.log("TUTORIAL ANTES ", dataset_tutorial)
-        const res3 = await axios.post("http://localhost:4000/api/datasets/uploadtutorial", formData3);
-        // newDataSet.append('dataset_tutorial', res3);
-        // console.log("TUTORIAL DESPUES ", res3)
-
-        formData.append('dataset_photo', res)
-        formData.append('dataset_tutorial', res3)
-
-        // newDataSet.append('dataset_tutorial', dataset_tutorial);
-        // console.log("TUTORIAL ANTES ", dataset_tutorial)
-        // const res3 = await axios.post("http://localhost:4000/api/datasets/uploadtutorial", newDataSet);
-        // newDataSet.append('dataset_tutorial', res3);
-        // console.log("TUTORIAL DESPUES ", res3)
-
-        // const ava = newDataSet.get('dataset_photo')
-        // console.log(ava)
-        try {
-            const res = await axios.post("http://localhost:4000/api/datasets/", newDataSet);
-            //console.log(res);
-            navigate('/MyDataSets')
-        } catch (err) {
-            if (err.response) {
-                // Si hay una respuesta del servidor, muestra el mensaje de error del servidor
-                setErrorMessage(err.response.data.error || 'An error ocurred while creating the user.');
-            } else {
-                // Si no hay respuesta del servidor, muestra un mensaje genérico de error
-                setErrorMessage('An error occurred. Please try again later.');
-            }
+        // Check if required fields are filled
+        if (!dataset_name || !dataset_description || !dataset_photo || dataset_archive.length === 0 || !dataset_tutorial) {
+            setErrorMessage('Please fill in all required fields.');
+            return;
         }
-        console.log('--------------------------------- OTRO INTENTO ---------------------------------')
-    }
+
+        try {
+            // Create a FormData object to store form data
+            const formData = new FormData();
+            formData.append('dataset_author', "random");
+            formData.append('dataset_createdDate', new Date().toISOString());
+            formData.append('dataset_name', dataset_name);
+            formData.append('dataset_description', dataset_description);
+            formData.append('dataset_photo', dataset_photo);
+
+            // Append archive files
+            dataset_archive.forEach(file => {
+                formData.append('dataset_archive', file);
+            });
+
+            // Append tutorial video file
+            formData.append('dataset_tutorial', dataset_tutorial);
+
+            for (let pair of formData.entries()) {
+                console.log(pair[0] + ': ' + pair[1]);
+            }
+
+            // Make a POST request to your backend endpoint with axios
+            const response = await axios.post("http://localhost:4000/api/datasets/", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data' // Set content type to multipart/form-data
+                }
+            });
+
+            if (response.status === 200) {
+                //navigate('/MyDatasets');
+            } else {
+                setErrorMessage('Error al crear el conjunto de datos');
+            }
+        } catch (error) {
+            setErrorMessage('Error al crear el conjunto de datos');
+        }
+    };
+
+
+
     return (
         <div className="nav-container">
             <NavBar />
@@ -150,7 +92,7 @@ function CreateDataSet() {
                                     type="text"
                                     placeholder="Name of your dataset"
                                     autoComplete="off"
-                                    name="datasetName"
+                                    name="dataset_name"
                                     className="form-control rounded-0"
                                     onChange={(e) => setDatasetName(e.target.value)}
                                 />
@@ -160,7 +102,7 @@ function CreateDataSet() {
                                     type="text"
                                     placeholder="Description of your dataset"
                                     autoComplete="off"
-                                    name="datasetDescription"
+                                    name="dataset_description"
                                     className="form-control rounded-0"
                                     onChange={(e) => setDatasetDescription(e.target.value)}
                                 />
@@ -172,6 +114,7 @@ function CreateDataSet() {
                                     <input
                                         type="file"
                                         id="avatarInput"
+                                        name="dataset_photo"
                                         accept="image/png, image/jpeg, image/jpg"
                                         onChange={(e) => {
                                             const fileName = e.target.files[0].name; // Obtén el nombre del archivo seleccionado
@@ -190,7 +133,7 @@ function CreateDataSet() {
                                         id="archiveInput"
                                         accept="*"
                                         multiple
-                                        name="dataset_archive" 
+                                        name="dataset_archive"
                                         onChange={(e) => setDatasetArchive(Array.from(e.target.files))}
                                     />
                                 </label>
@@ -205,6 +148,7 @@ function CreateDataSet() {
                                         type="file"
                                         id="videoInput"
                                         accept="video/*"
+                                        name="dataset_tutorial"
                                         onChange={(e) => setDatasetTutorial(e.target.files[0])}
                                     />
                                 </label>

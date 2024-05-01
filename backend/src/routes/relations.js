@@ -3,7 +3,7 @@ const { Router } = require('express');
 const multer = require('multer');
 const path = require('path');
 
-const { setNewRelation, checkFollow, deleteRelation, setNewVote, checkVote, deleteVote} = require('../controllers/relations.controller');
+const { setNewRelation, checkFollow, deleteRelation, setNewVote, checkVote, deleteVote, setNewDownload, getMyVotes } = require('../controllers/relations.controller');
 const router = Router();
 
 /**AQUI SE CREA EL VOTO */
@@ -25,5 +25,11 @@ router.route('/deleteVote')
 
 router.route('/checkVote')
     .post(checkVote)
+
+router.route('/createDownload')
+    .post(setNewDownload)
+
+router.route('/getVotes')
+    .post(getMyVotes)
 
 module.exports = router;

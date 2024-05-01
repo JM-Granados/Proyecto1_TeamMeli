@@ -35,6 +35,22 @@ relationsCtrl.setNewVote = async (req, res) => {
 
 }
 
+relationsCtrl.setNewDownload = async (req, res) => {
+  
+    const { idDataset, currentUsername } = req.body;
+
+
+    await RelationsModel.setNewDownload(idDataset, currentUsername, (err, result) => {
+        if (err) {
+            res.status(500).json({ error: err.message, detail: err.detail });
+        }
+        else {
+            res.json({ message: 'Relation of download created' });
+        }
+    }) 
+
+}
+
 relationsCtrl.deleteRelation = async (req, res) => {
     const { followerUsername, followedUsername } = req.body;
 
@@ -89,5 +105,22 @@ relationsCtrl.checkVote= async (req, res) => {
         }
     })
 }
+
+
+relationsCtrl.getMyVotes= async (req, res) => {
+    const { currentUsername } = req.body;
+    console.log("RELATIONS CONTROLLER")
+    console.log(currentUsername)
+    await RelationsModel.getMyVotes( currentUsername, (err, result) => {
+        if (err) {
+            res.status(500).json({ error: err.message, detail: err.detail });
+        }
+        else {
+            res.json({ message: result });
+        }
+    })
+}
+
+
 
 module.exports = relationsCtrl;

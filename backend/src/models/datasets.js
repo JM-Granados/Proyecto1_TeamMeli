@@ -32,13 +32,13 @@ const datasetSchema = new Schema({
         required: true,
         trim: true //limpiar texto
     },
-    dataset_photo: photoSchema, // Utiliza el subesquema
-    dataset_archive: [{
-        archive_name: String,
-        archive_type: String,
-        archive_path: String
-    }],
-    dataset_tutorial: tutorialSchema, // Utiliza el subesquema
+    dataset_photo: String, // Utiliza el subesquema
+    dataset_archive: [
+        {
+            type: String
+        }
+    ],
+    dataset_tutorial: String, // Utiliza el subesquema
     dataset_comments: [{
         author: String,
         content: String,
