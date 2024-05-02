@@ -3,17 +3,22 @@ import "./ChatPage.css";
 import axios from 'axios';
 import { format } from "timeago.js";
 import InputEmoji from 'react-input-emoji'
+import { Button } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
+import ScrollToBottom from 'react-scroll-to-bottom';
 
 const ChatPage = () => {
     const user = JSON.parse(localStorage.getItem('user'));
     const scroll = useRef(null);
-    const imageRef = useRef();
+    const navigate = useNavigate() 
     
-    const getImageUrl = (avatar) => {
-        return avatar ? `http://localhost:4000/user-images/${avatar}` : `http://localhost:4000/user-images/User.png`;
+    const getFileUrl = (avatar) => {
+        return avatar ? `http://localhost:4000/send-files/${avatar}` : `http://localhost:4000/user-images/User.png`;
     };
 
-    const getFileUrl = (avatar) => {
+    const getFileNow = (file) => URL.createObjectURL(file);
+
+    const getImageUrl = (avatar) => {
         return avatar ? `http://localhost:4000/user-images/${avatar}` : `http://localhost:4000/user-images/User.png`;
     };
     
@@ -24,9 +29,19 @@ const ChatPage = () => {
     const [newMessage, setNewMessage] = useState("");
     const [sendMessage, setSendMessage] = useState(null);
     const [receivedMessage, setReceivedMessage] = useState(null);
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [preSelectedFile, setPreSelectedFile] = useState(null);
+    const fileInputRef = useRef(null);
     
     const handleChange = (newMessage)=> {
         setNewMessage(newMessage)
+    }
+
+    const handleFileChange = (e)=> {
+        if (e.target.files.length > 0) {
+            setSelectedFile(e.target.files[0]);
+            setPreSelectedFile(e.target.files[0]);
+        }
     }
 
     useEffect(() => {
@@ -79,7 +94,7 @@ const ChatPage = () => {
 
     useEffect(() => {
         scroll.current?.scrollIntoView({behavior: "smooth"})
-    }, []);
+    }, [newMessage]);
 
     const handleOpenChat = async (chat) => {
         try {
@@ -93,34 +108,37 @@ const ChatPage = () => {
         }
     };
 
+    const handleViewClick = (user) => {
+        // Guarda la información del usuario en localStorage
+        console.log(user)
+        localStorage.setItem('selectedUser', JSON.stringify(user));
+
+        // Redirige a la página "/OtherUserAcc"
+        navigate('/OtherUserAcc')
+    };
+
 
     const handleSend = async(e)=> {
-        e.preventDefault()
-
+        e.preventDefault();
+        const formData = new FormData();
         const userSender = user.username;
         const userRecipient = currectUserRec.username;
-        let text = newMessage;
-        let file = null;
-        const value = imageRef.current.value;
+        formData.append('userSender', userSender)
+        formData.append('userRecipient', userRecipient)
+        formData.append('text', newMessage);
+        console.log(newMessage);
+        console.log(selectedFile);
+        if (selectedFile) {
+            formData.append('file', selectedFile);
+        }
 
-        if(value !== "") {
-            text = null;
-            file = value;
-            try {
-                const response = await axios.post(`http://localhost:4000/api/messages/sendFile`, {userSender, userRecipient, text, file});
-            }
-            catch{
-                console.log("error")
-            }    
-        } else {
-            try {
-                const response = await axios.post(`http://localhost:4000/api/messages/sendMessage`, {userSender, userRecipient, text, file});
-                
-            }
-            catch
-            {
-                console.log("error")
-            }
+        try {
+            await axios.post(`http://localhost:4000/api/messages/sendMessage`, formData);
+            setNewMessage('');
+            setSelectedFile(null);
+            fileInputRef.current.value = ""; // Reset file input
+        } catch (error) {
+            console.error('Error sending message:', error);
         }
     }    
     
@@ -170,7 +188,24 @@ const ChatPage = () => {
                                                 alt="Profile"
                                                 className="rounded-circle avatarIntoChat"
                                             />
-                                            <span className="username">{currectUserRec.username}</span>
+                                            <button 
+                                                type="button" 
+                                                className="btn btn-link" 
+                                                style={{
+                                                    padding: 0,
+                                                    border: 'none',
+                                                    backgroundColor: 'transparent',
+                                                    color: 'black', // Ajusta el color según tu tema
+                                                    fontSize: '16px', // Ajusta según el tamaño deseado
+                                                    textDecoration: 'none', // Elimina subrayado de enlaces
+                                                    boxShadow: 'none' // Asegúrate de que no haya sombra
+                                                }}
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#exampleModal" 
+                                                onClick={() => handleViewClick(currectUserRec)}
+                                            >
+                                                {currectUserRec.username}
+                                            </button>
                                         </div>
                                     </div>
                                     <hr
@@ -183,7 +218,7 @@ const ChatPage = () => {
                                 </div>
 
                                 <div className="chat-body" >
-                                    {currentChat.map((message) => (
+                                    {currentChat.map((message, index) => (
                                         <div
                                             key={message.id}
                                             className={
@@ -191,27 +226,49 @@ const ChatPage = () => {
                                                 ? "message own"
                                                 : "message"
                                             }
+                                            ref={index === currentChat.length - 1 ? scroll : null}
                                         >
-                                            <span>{message.text}</span>{" "}
+                                            {message.file ? (
+                                                /\.(jpg|jpeg|png|gif|bmp)$/i.test(message.file) ? (
+                                                    // Si el archivo es una imagen, muestra la imagen
+                                                    <img src={getFileUrl(message.file)} alt="Uploaded Image" style={{ maxWidth: '100%', height: 'auto' }} onLoad={() => console.log('Image loaded successfully')} onError={() => console.log('Failed to load image', getImageUrl(message.file))} />
+                                                ) : (
+                                                    // Si el archivo no es una imagen, muestra un enlace para descargarlo
+                                                    <a href={getFileUrl(message.file)} download target="_blank" rel="noopener noreferrer">
+                                                        Download File
+                                                    </a>
+                                                )
+                                            ) : (
+                                                <span>{message.text}</span>
+                                            )}
                                             <span>{format(message.createdAt)}</span>
                                         </div>
                                     ))}
-                                    <div ref={scroll} />
                                 </div>
 
                                 <div className="chat-sender">
-                                    <div onClick={() => imageRef.current.click()}>+</div>
+                                    <div onClick={() => fileInputRef.current.click()}>+</div>
                                     <InputEmoji
                                         value={newMessage}
                                         onChange={handleChange}
                                     />
-                                    <div className="send-button button" onClick = {handleSend}>Send</div>
+                                    {selectedFile && (
+                                        /\.(jpg|jpeg|png|gif|bmp)$/i.test(selectedFile.name) ? (
+                                            <img src={getFileNow(selectedFile)} alt="Uploaded" style={{ maxWidth: '5%', height: 'auto' }} />
+                                        ) : (
+                                            <a href={getFileNow(selectedFile)} download={selectedFile.name}>
+                                                See {selectedFile.name}
+                                            </a>
+                                        )
+                                    )}
+                                    <Button variant="outline-success" type="submit" onClick={handleSend}>Search</Button>
                                     <input
                                         type="file"
                                         name=""
                                         id=""
                                         style={{ display: "none" }}
-                                        ref={imageRef}
+                                        onChange={handleFileChange}
+                                        ref={fileInputRef}
                                     />
                                 </div>{" "}
                             </>

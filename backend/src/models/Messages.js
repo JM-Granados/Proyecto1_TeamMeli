@@ -8,4 +8,12 @@ class Message {
     }
 }
 
-module.exports = Message;
+class Notification {
+    constructor(user, text) {
+        this.user = user;
+        this.text = text;
+        this.createdAt = new Date();
+    }
+}
+
+module.exports = {Message, Notification};

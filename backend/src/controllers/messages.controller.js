@@ -8,19 +8,44 @@ const ravenDB = connection.Raven;
 
 const sendMessage = async (req, res) => {
     console.log("holaaa")
-    console.log(req.body.file)
+    const file = req.file ? req.file.filename : null;
     console.log(req.file)
+    console.log(req.body)
     
     ravenDB.initialize();
     const session = ravenDB.openSession();
     // Asumiendo que req.body contiene los campos necesarios
     try {
-        const message = new Message(req.body.userSender, req.body.userRecipient, req.body.text, req.body.file);
+        const message = new Message.Message(req.body.userSender, req.body.userRecipient, req.body.text, file);
     
         // Guardar el mensaje en RavenDB
         await session.store(message);
         await session.saveChanges();
         res.status(201).send(message);
+    } catch (err) {
+        console.log(err);
+        res.status(500).send("Error")
+    }
+};
+
+const newNotification = async (req, res) => {
+    console.log("holaaa")
+    console.log(req.body)
+
+    const text = `${req.body.userSender} just uploaded a new DataSet!`;
+
+    console.log(text);
+    
+    ravenDB.initialize();
+    const session = ravenDB.openSession();
+    // Asumiendo que req.body contiene los campos necesarios
+    try {
+        const noti = new Message.Notification(req.body.userSender, text);
+    
+        // Guardar el mensaje en RavenDB
+        await session.store(noti);
+        await session.saveChanges();
+        res.status(201).send(noti);
     } catch (err) {
         console.log(err);
         res.status(500).send("Error")
@@ -45,6 +70,26 @@ const getMessages = async (req, res) => {
             .all();
 
         res.status(200).send(messages);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al recuperar los mensajes');
+    }
+};
+
+const getNotification = async (req, res) => {
+    console.log("hola");
+    console.log(req.params);
+    const session = ravenDB.openSession();
+    
+    try {
+        const {userSender} = req.params;
+
+        const notifications = await session.query({ collection: 'Notifications' })
+            .whereEquals('user', userSender)
+            .orderBy('createdAt')
+            .all();
+
+        res.status(200).send(notifications);
     } catch (error) {
         console.error(error);
         res.status(500).send('Error al recuperar los mensajes');
@@ -113,5 +158,7 @@ const getChats = async (req, res) => {
 module.exports = { 
     sendMessage,
     getMessages,
-    getChats
+    getChats,
+    newNotification,
+    getNotification
 };
